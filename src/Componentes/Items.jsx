@@ -29,11 +29,11 @@ class Items extends Component {
                                     </li>
                                     
                                     <li>
-                                        <Link to="/funcionarios">Card Funcionario</Link>                                        
+                                        <Link to="/app/funcionarios">Card Funcionario</Link>                                        
                                     </li>
 
                                     <li>
-                                        <Link to="/funcionarios-create">Novo Funcionario</Link>                                        
+                                        <Link to="/app/funcionarios-create">Novo Funcionario</Link>                                        
                                     </li>                                    
 
                                     <li><a href="./page-chat.html">Chat<span className="badge badge-xs badge-danger">New</span></a></li>

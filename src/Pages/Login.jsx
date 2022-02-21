@@ -23,6 +23,7 @@ class Login extends Component {
         }).then((response) => {
 
             localStorage.setItem("usuarioCache", response)
+            window.location.pathname = 'app';
 
         }).catch((error) => {
 
