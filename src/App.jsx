@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { BrowserRouter, Navigate } from "react-router-dom";
-import Container from "./Container";
-import { Route, Routes, Outlet } from "react-router-dom";
-import Login from "./Pages/Login";
-import PublicLayout from "./PublicLayout";
-import PrivateLayout from "./PrivateLayout";
-import PrivateRoute from "./PrivateRoute";
+import { BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import PublicRoute from "./Routes/PublicRoute";
+import Container from "./Pages/Container";
+import PrivateRoute from "./Routes/PrivateRoute";
+import history from './Componentes/History';
 
-const isAuthenticated = true;
+import 'devextreme/dist/css/dx.light.css';
 
 export default class App extends Component {
 
@@ -16,19 +15,19 @@ export default class App extends Component {
 
 			<>
 				<BrowserRouter>
-					<Routes>
+					<Routes  history={history}>
 
-						<Route 
+						<Route
 							path="/app/*" 
 							element={
 								<PrivateRoute>
-									<PrivateLayout/>
+									<Container/>
 								</PrivateRoute>
 							} 
 						/>	
 
-						<Route exact path="/login" element={<PublicLayout />} />
-						<Route exact path="/*" element={<PublicLayout />} />
+						<Route exact path="/login" element={<PublicRoute />} />
+						<Route exact path="/*" element={<PublicRoute />} />
 
 					</Routes>
 				</BrowserRouter>

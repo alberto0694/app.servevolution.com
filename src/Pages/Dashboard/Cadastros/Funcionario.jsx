@@ -1,84 +1,53 @@
-
 import React, { Component } from 'react';
-import UserCard from '../../Componentes/UserCard';
+import axios from 'axios';
+import UserCard from '../../../Componentes/UserCard';
+import { Link } from 'react-router-dom';
 
 class Funcionario extends Component {
-
-    setConfigCharts(){
-        window.$("#sparkline8").sparkline([79, 72, 29, 6, 52, 32, 73, 40, 14, 75, 77, 39, 9, 15, 10], {
-            type: "line",
-            //width: "100%",
-            width: 300,
-            height: "50",
-            lineColor: "#EB8153",
-            fillColor: "rgba(235, 129, 83, .5)",
-            minSpotColor: "#EB8153",
-            maxSpotColor: "#EB8153",
-            highlightLineColor: "#EB8153",
-            highlightSpotColor: "#EB8153",
-            
-        });
-    }
 
     constructor(props) {
         super(props);
 
-        
-        
-        this.setConfigCharts = this.setConfigCharts.bind(this);
-     }
+        this.state = {};
+        this.componentDidMount = this.componentDidMount.bind(this);
+    }
 
-    componentDidMount(){
+    componentDidMount() {
 
+        axios.get('/api/funcionario/list')
+            .then((response) => {
 
-        
-            window.addEventListener('load', this.setConfigCharts);
+                this.setState({ funcionarios: response.data });
 
-           console.log('passei aqui');
+            })
+            .catch((error) => {
 
+            });
+    }
 
+    renderFuncionarios() {
+
+        if (this.state.funcionarios != null && this.state.funcionarios.length > 0) {
+            
+            return this.state.funcionarios.map((item, index) => {
+                return <UserCard key={index} user={item} />
+            });
+        }
+        else {
+            
+            return <h1>nenhum funcionario encontrado</h1>
+        }
 
     }
 
-
     render() {
-
-        let elementos = [];
-
-        for (let index = 0; index < 10; index++) {
-            elementos.push(<UserCard key={index} />);
-        }
 
         return (
             <>
-					<div className="col-xl-3 col-xxl-4 col-sm-6">
-                        <div className="card">
-                            <div className="card-header" onClick={ this.setConfigCharts }>
-								<h4 className="card-title">Site Traffic</h4>
-							</div>
-							<div className="card-body">
-                                <div className="ico-sparkline">
-									<div id="sparkline8"></div>
-								</div>                              
-                            </div>
-                        </div>
-					</div>
-
                 <div className="project-nav">
-                    <div className="card-action card-tabs  me-auto mb-md-0 mb-3">
-                        <ul className="nav nav-tabs style-2">
-                            <li className="nav-item">
-                                <a href="#navpills-1" className="nav-link active" data-bs-toggle="tab" aria-expanded="false">Todos <span className="badge badge-primary shadow-primary">154</span></a>
-                            </li>
-                            <li className="nav-item">
-                                <a href="#navpills-2" className="nav-link" data-bs-toggle="tab" aria-expanded="false">Pendentes <span className="badge shadow-warning  badge-warning">6</span></a>
-                            </li>
-                        </ul>
-                    </div>
-
-
                     <div className="d-flex align-items-center">
-                        <button data-bs-toggle="modal" data-bs-target="#addContactModal" id="btn-add-contact" className="btn btn-primary text-white">Novo Funcionário</button>
+                        <button data-bs-toggle="modal" data-bs-target="#addContactModal" id="btn-add-contact" className="btn btn-primary text-white">Cadastro Rápido</button>
+                        <Link to={`/app/funcionario-create`} className="btn btn-primary text-white">Novo Funcionário</Link>
                     </div>
                 </div>
 
@@ -87,22 +56,13 @@ class Funcionario extends Component {
                         <div className="row dz-scroll  loadmore-content searchable-items list" id="allContactListContent">
                             <div className="items items-header-section">
                             </div>
-                            {
-                                elementos
-                            }
+                            
+                            { this.renderFuncionarios() }
+
                         </div>
                     </div>
                 </div>
 
-                { this.showNovoFuncionario() }
-
-            </>
-        );
-    }
-
-    showNovoFuncionario() {
-        return (
-            <>
                 <div className="modal fade" id="addContactModal" tabIndex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
@@ -150,9 +110,11 @@ class Funcionario extends Component {
                         </div>
                     </div>
                 </div>
+
             </>
         );
     }
+
 }
 
 export default Funcionario;

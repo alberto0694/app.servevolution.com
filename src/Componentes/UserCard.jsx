@@ -1,6 +1,29 @@
+import { Item } from 'devextreme-react/validation-summary';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class UserCard extends Component {
+
+
+    constructor(props) {
+
+        super(props);
+        this.state = props;
+
+    }
+
+
+    renderServicos() {
+
+        if(this.state.funcionario?.tipoServicos == null) return;
+
+        return this.state.funcionario.tipoServicos.map((ts) => {
+            return <span style={{ minWidth: "100px", float: "left" }} className="fs-14 mb-3 user-work">{ ts.descricao }&nbsp;</span>
+        })
+
+    }
+
+
     render() {
         return (
             <>
@@ -10,11 +33,7 @@ class UserCard extends Component {
                             <div className="action-dropdown">
                                 <div className="dropdown">
                                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#575757" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                            <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#575757" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                            <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#575757" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                                        </svg>
+                                        <img src="https://us.123rf.com/450wm/anatolir/anatolir2011/anatolir201105528/159470802-jurist-avatar-icon-flat-style.jpg?ver=6" alt="" />
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
                                         <a className="dropdown-item edit" href="#">Editar</a>
@@ -29,11 +48,9 @@ class UserCard extends Component {
                                 <span className="active"></span>
                             </div>
                             <div className="media-body user-meta-info">
-                                <h6 className="fs-20 font-w500 my-1"><a href="app-profile.html" className="text-black user-name" data-name="Angela Moss">Angela Moss</a></h6>
-                                <span style={{ minWidth:"100px", float: "left" }} className="fs-14 mb-3 user-work">#Chapeiro&nbsp;</span>
-                                <span style={{ minWidth:"100px", float: "left" }} className="fs-14 mb-3 user-work">#Limpeza&nbsp;</span>
-                                <span style={{ minWidth:"100px", float: "left" }} className="fs-14 mb-3 user-work">#Conserto&nbsp;</span>
-                                <span style={{ minWidth:"100px", float: "left" }} className="fs-14 mb-3 user-work">#Motorista&nbsp;</span>
+                                <h6 className="fs-20 font-w500 my-1">
+                                    <Link to="`/app/cards{  }`" className="text-black user-name" data-name="Angela Moss">{ this.state.pessoa.razao || this.state.pessoa.apelido }</Link>
+                                </h6>                                
                             </div>
                         </div>
                     </div>

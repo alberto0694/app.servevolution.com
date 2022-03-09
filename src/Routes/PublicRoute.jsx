@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import Container from "./Container";
 import { Route, Routes } from "react-router-dom";
-import Login from "./Pages/Login";
+import Login from "../Pages/Login";
 
-class PublicLayout extends Component {
+class PublicRoute extends Component {
     render() {
         return (
             <div>
@@ -16,4 +15,4 @@ class PublicLayout extends Component {
     }
 }
 
-export default PublicLayout;
+export default PublicRoute;

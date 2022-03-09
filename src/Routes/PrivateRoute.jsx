@@ -3,23 +3,16 @@ import { Navigate } from 'react-router-dom';
 
 export default class PrivateRoute extends Component {
 
-    isAuthenticated(){
+    isAuthenticated() {
         return localStorage.getItem("usuarioCache") != null;
     }
-
-
 
     render() {
 
         return (
             <div>
-                { this.isAuthenticated() ? this.props.children : <Navigate to="/login" /> }
+                {this.isAuthenticated() ? this.props.children : <Navigate to="/login" />}
             </div>
         );
     }
 }
-
-// export default function PrivateRoute({ children }) {
-//     const auth = false;
-//     return auth ? children : <Navigate to="/login" />;
-//   }
