@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 
-export default class PrivateRoute extends Component {
+export default class AuthRoute extends Component {
 
     isAuthenticated() {
-        return localStorage.getItem("usuarioCache") != null;
+        let usuarioCache = localStorage.getItem("usuarioCache");
+        return usuarioCache != null && usuarioCache != 'undefined';
     }
 
     render() {

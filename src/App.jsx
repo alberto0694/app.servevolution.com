@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PublicRoute from "./Routes/PublicRoute";
 import Container from "./Pages/Container";
-import PrivateRoute from "./Routes/PrivateRoute";
+import AuthRoute from "./Routes/AuthRoute";
 import history from './Componentes/History';
 
 import 'devextreme/dist/css/dx.light.css';
+import 'react-notifications/lib/notifications.css';
 
 export default class App extends Component {
 
@@ -20,13 +20,12 @@ export default class App extends Component {
 						<Route
 							path="/app/*" 
 							element={
-								<PrivateRoute>
+								<AuthRoute>
 									<Container/>
-								</PrivateRoute>
+								</AuthRoute>
 							} 
 						/>	
 
-						<Route exact path="/login" element={<PublicRoute />} />
 						<Route exact path="/*" element={<PublicRoute />} />
 
 					</Routes>

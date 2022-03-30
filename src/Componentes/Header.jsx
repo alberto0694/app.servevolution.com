@@ -3,6 +3,16 @@ import axios from 'axios';
 
 export default class Header extends Component {
 
+    userCache = null;
+
+    constructor(props) {
+
+        super(props);
+        this.state = {};
+        this.componentDidMount = this.componentDidMount.bind(this);
+
+    }
+
     doLogout() {
 
         axios.post('/api/auth/logout')
@@ -16,6 +26,19 @@ export default class Header extends Component {
                 this.setState({ isLoging: false });
             });
 
+    }
+
+    componentDidMount() {
+
+        let user = localStorage.getItem("usuarioCache");
+
+        if(user == null){
+            localStorage.removeItem("usuarioCache");
+            window.location.pathname = '/';
+        }
+
+        this.userCache = JSON.parse(user);
+        this.setState({ menu: this.userCache.menu });
     }
 
     render() {
@@ -33,13 +56,13 @@ export default class Header extends Component {
                             </div>
                             <ul className="navbar-nav header-right main-notification">
                                 <li className="nav-item dropdown notification_dropdown">
-                                    <a className="nav-link bell dz-theme-mode" href="#">
+                                    <a className="nav-link bell dz-theme-mode" href="javascript:void(0)">
                                         <i id="icon-light" className="far fa-sun"></i>
                                         <i id="icon-dark" className="far fa-moon"></i>
                                     </a>
                                 </li>
                                 <li className="nav-item dropdown notification_dropdown">
-                                    <a className="nav-link bell dz-fullscreen" href="#">
+                                    <a className="nav-link bell dz-fullscreen" href="javascript:void(0)">
                                         <svg id="icon-full" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2"
                                             fill="none" strokeLinecap="round" strokeLinejoin="round" className="css-i6dzq1">
                                             <path
@@ -167,7 +190,7 @@ export default class Header extends Component {
                                             <ul className="timeline">
                                                 <li>
                                                     <div className="timeline-badge primary"></div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>10 minutes ago</span>
                                                         <h6 className="mb-0">Youtube, a video-sharing website, goes live <strong
                                                             className="text-primary">$500</strong>.</h6>
@@ -176,7 +199,7 @@ export default class Header extends Component {
                                                 <li>
                                                     <div className="timeline-badge info">
                                                     </div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>20 minutes ago</span>
                                                         <h6 className="mb-0">New order placed <strong className="text-info">#XF-2356.</strong></h6>
                                                         <p className="mb-0">Quisque a consequat ante Sit amet magna at volutapt...</p>
@@ -185,7 +208,7 @@ export default class Header extends Component {
                                                 <li>
                                                     <div className="timeline-badge danger">
                                                     </div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>30 minutes ago</span>
                                                         <h6 className="mb-0">john just buy your product <strong className="text-warning">Sell $250</strong>
                                                         </h6>
@@ -194,7 +217,7 @@ export default class Header extends Component {
                                                 <li>
                                                     <div className="timeline-badge success">
                                                     </div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>15 minutes ago</span>
                                                         <h6 className="mb-0">StumbleUpon is acquired by eBay. </h6>
                                                     </a>
@@ -202,7 +225,7 @@ export default class Header extends Component {
                                                 <li>
                                                     <div className="timeline-badge warning">
                                                     </div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>20 minutes ago</span>
                                                         <h6 className="mb-0">Mashable, a news website and blog, goes live.</h6>
                                                     </a>
@@ -210,7 +233,7 @@ export default class Header extends Component {
                                                 <li>
                                                     <div className="timeline-badge dark">
                                                     </div>
-                                                    <a className="timeline-panel text-muted" href="#">
+                                                    <a className="timeline-panel text-muted" href="javascript:void(0)">
                                                         <span>20 minutes ago</span>
                                                         <h6 className="mb-0">Mashable, a news website and blog, goes live.</h6>
                                                     </a>
@@ -220,11 +243,11 @@ export default class Header extends Component {
                                     </div>
                                 </li>
                                 <li className="nav-item dropdown header-profile">
-                                    <a className="nav-link" href="#" role="button" data-bs-toggle="dropdown">
+                                    <a className="nav-link" href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
                                         <img src="images/profile/pic1.jpg" width="20" alt="" />
                                         <div className="header-info">
-                                            <span>Johndoe</span>
-                                            <small>Super Admin</small>
+                                            <span>{ this.userCache?.usuario.name }</span>
+                                            <small>{ this.userCache?.usuario.email }</small>
                                         </div>
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">

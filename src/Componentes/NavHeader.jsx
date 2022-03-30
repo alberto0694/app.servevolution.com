@@ -1,12 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class NavHeader extends Component {
     render() {
         return (
             <div className="nav-header">
-                <a href="index.html" className="brand-logo">
-                    <h4>ServEvolution</h4>
-                </a>
+                <Link to="/app" className="brand-logo">
+                    <div className="text-center brand-title">
+                        <img src="images/logo-full-black.png" alt="" />
+                    </div>
+                </Link>
 
                 <div className="nav-control">
                     <div className="hamburger">

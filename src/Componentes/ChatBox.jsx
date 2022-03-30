@@ -21,7 +21,7 @@ export default class ChatBox extends Component {
                         <div className="tab-pane fade active show" id="chat" role="tabpanel">
                             <div className="card mb-sm-3 mb-md-0 contacts_card dz-chat-user-box">
                                 <div className="card-header chat-list-header text-center">
-                                    <a href="#"><svg width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
+                                    <a href="javascript:void(0)"><svg width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect fill="#000000" x="4" y="11" width="16" height="2" rx="1" />
                                             <rect fill="#000000" opacity="0.3"
@@ -33,7 +33,7 @@ export default class ChatBox extends Component {
                                         <h6 className="mb-1">Chat List</h6>
                                         <p className="mb-0">Show All</p>
                                     </div>
-                                    <a href="#"><svg
+                                    <a href="javascript:void(0)"><svg
                                         width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -235,7 +235,7 @@ export default class ChatBox extends Component {
                             </div>
                             <div className="card chat dz-chat-history-box d-none">
                                 <div className="card-header chat-list-header text-center">
-                                    <a href="#" className="dz-chat-history-back">
+                                    <a href="javascript:void(0)" className="dz-chat-history-back">
                                         <svg width="18px"
                                             height="18px" viewBox="0 0 24 24" version="1.1">
                                             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -255,7 +255,7 @@ export default class ChatBox extends Component {
                                         <p className="mb-0 text-success">Online</p>
                                     </div>
                                     <div className="dropdown">
-                                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false"><svg
+                                        <a href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false"><svg
                                             width="18px" height="18px" viewBox="0 0 24 24"
                                             version="1.1">
                                             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -414,7 +414,7 @@ export default class ChatBox extends Component {
                         <div className="tab-pane fade" id="alerts" role="tabpanel">
                             <div className="card mb-sm-3 mb-md-0 contacts_card">
                                 <div className="card-header chat-list-header text-center">
-                                    <a href="#"><svg
+                                    <a href="javascript:void(0)"><svg
                                         width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -427,7 +427,7 @@ export default class ChatBox extends Component {
                                         <h6 className="mb-1">Notications</h6>
                                         <p className="mb-0">Show All</p>
                                     </div>
-                                    <a href="#"><svg
+                                    <a href="javascript:void(0)"><svg
                                         width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -489,7 +489,7 @@ export default class ChatBox extends Component {
                         <div className="tab-pane fade" id="notes">
                             <div className="card mb-sm-3 mb-md-0 note_card">
                                 <div className="card-header chat-list-header text-center">
-                                    <a href="#"><svg
+                                    <a href="javascript:void(0)"><svg
                                         width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect fill="#000000" x="4" y="11" width="16" height="2" rx="1" />
@@ -502,7 +502,7 @@ export default class ChatBox extends Component {
                                         <h6 className="mb-1">Notes</h6>
                                         <p className="mb-0">Add New Nots</p>
                                     </div>
-                                    <a href="#"><svg
+                                    <a href="javascript:void(0)"><svg
                                         width="18px" height="18px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -524,8 +524,8 @@ export default class ChatBox extends Component {
                                                     <p>10 Aug 2020</p>
                                                 </div>
                                                 <div className="ms-auto">
-                                                    <a href="#" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
-                                                    <a href="#" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
                                                 </div>
                                             </div>
                                         </li>
@@ -536,8 +536,8 @@ export default class ChatBox extends Component {
                                                     <p>10 Aug 2020</p>
                                                 </div>
                                                 <div className="ms-auto">
-                                                    <a href="#" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
-                                                    <a href="#" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
                                                 </div>
                                             </div>
                                         </li>
@@ -548,8 +548,8 @@ export default class ChatBox extends Component {
                                                     <p>10 Aug 2020</p>
                                                 </div>
                                                 <div className="ms-auto">
-                                                    <a href="#" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
-                                                    <a href="#" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
                                                 </div>
                                             </div>
                                         </li>
@@ -560,8 +560,8 @@ export default class ChatBox extends Component {
                                                     <p>10 Aug 2020</p>
                                                 </div>
                                                 <div className="ms-auto">
-                                                    <a href="#" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
-                                                    <a href="#" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-primary btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></a>
+                                                    <a href="javascript:void(0)" className="btn btn-danger btn-xs sharp"><i className="fa fa-trash"></i></a>
                                                 </div>
                                             </div>
                                         </li>

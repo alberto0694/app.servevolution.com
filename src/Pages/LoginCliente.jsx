@@ -43,7 +43,7 @@ class Login extends Component {
             })
             .then((response) => {
                 
-                localStorage.setItem("usuarioCache", JSON.stringify(response.data));
+                localStorage.setItem("usuarioCache", JSON.stringify({ ...response.data, cliente:true }));
                 window.location.pathname = 'app';
             })
             .catch((error) => {
@@ -69,7 +69,8 @@ class Login extends Component {
                                                     <div className="text-center mb-3">
                                                         <img src="images/logo-full-black.png" alt="" />
                                                     </div>
-                                                    <h4 className="text-center mb-4">Entre com sua conta</h4>
+                                                    <h4 className="text-center mb-4">Portal do Cliente</h4>
+                                                    <h5 className="text-center mb-4">Seja bem vindo</h5>
                                                     <form action="index.html">
                                                         <div className="form-group">
                                                             <label className="mb-1"><strong>Usuário</strong></label>

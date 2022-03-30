@@ -8,7 +8,7 @@ class UserCard extends Component {
     constructor(props) {
 
         super(props);
-        this.state = props;
+        this.state = { ...props };
 
     }
 
@@ -32,12 +32,12 @@ class UserCard extends Component {
                         <div className="card-header border-0">
                             <div className="action-dropdown">
                                 <div className="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="https://us.123rf.com/450wm/anatolir/anatolir2011/anatolir201105528/159470802-jurist-avatar-icon-flat-style.jpg?ver=6" alt="" />
+                                    <a href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src={ this.state.user.foto || '' } alt="" />
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
-                                        <a className="dropdown-item edit" href="#">Editar</a>
-                                        <a className="dropdown-item delete" href="#">Excluir</a>
+                                        <a className="dropdown-item edit" href="javascript:void(0)">Editar</a>
+                                        <a className="dropdown-item delete" href="javascript:void(0)">Excluir</a>
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@ class UserCard extends Component {
                             </div>
                             <div className="media-body user-meta-info">
                                 <h6 className="fs-20 font-w500 my-1">
-                                    <Link to="`/app/cards{  }`" className="text-black user-name" data-name="Angela Moss">{ this.state.pessoa.razao || this.state.pessoa.apelido }</Link>
+                                    <Link to="`/app/cards`" className="text-black user-name" data-name="Angela Moss">{ this.state.user.name || this.state.user.name }</Link>
                                 </h6>                                
                             </div>
                         </div>

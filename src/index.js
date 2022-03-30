@@ -4,8 +4,8 @@ import App from './App';
 import axios from 'axios';
 
 
-axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
-//axios.defaults.baseURL = 'http://localhost:8000';
+//axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
+axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use((config) => {
 
@@ -24,10 +24,8 @@ axios.interceptors.response.use((response) => {
     return response;
 
 }, (error) => {
-
-    console.log('error', error);
-
-    localStorage.removeItem("usuarioCache");
+    
+    // localStorage.removeItem("usuarioCache");
     return error;
 });
 

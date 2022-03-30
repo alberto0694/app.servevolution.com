@@ -1,30 +1,56 @@
 import React, { Component } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import ScrollToTop from '../Componentes/ScrollToTop';
 
-import Funcionario from '../Pages/Dashboard/Cadastros/Funcionario';
-import FuncionarioCreate from '../Pages/Dashboard/Cadastros/FuncionarioCreate';
+import FuncionarioList from '../Pages/Dashboard/Cadastros/Funcionario/List';
+import FuncionarioCreate from '../Pages/Dashboard/Cadastros/Funcionario/Create';
+
+import TipoServicoList from '../Pages/Dashboard/Cadastros/TipoServico/List';
+import TipoServicoCreate from '../Pages/Dashboard/Cadastros/TipoServico/Create';
+
+import ClienteList from '../Pages/Dashboard/Cadastros/Cliente/List';
+import ClienteCreate from '../Pages/Dashboard/Cadastros/Cliente/Create';
 
 import NotFound from '../Pages/NotFound';
-import Cards from '../Componentes/Cards';
-import Grid from '../Componentes/Grid';
+
+import Agendamento from '../Pages/Dashboard/OrdemServico/Agendamento';
+import TabelaPrecoList from '../Pages/Dashboard/Cadastros/TabelaPreco/List';
+
+import PaginaInicial from '../Pages/Dashboard/PaginaInicial';
 
 
 class ContentRoutes extends Component {
+
     render() {
         return (
             <>
                 <Routes>
-                    <Route exact path="/cards" element={<Cards />} />
-                    <Route exact path="/funcionarios" element={<Funcionario />} />
+                    
+                    <Route exact path="/" element={<PaginaInicial />} />
+                    
+                    <Route exact path="/funcionarios" element={<FuncionarioList />} />
                     <Route exact path="/funcionario-create" element={<FuncionarioCreate />} />
                     <Route exact path="/funcionario-create/:funcionario_id" element={<FuncionarioCreate />} />
-                    <Route exact path="/grid" element={<Grid />} />
+
+                    <Route exact path="/tipo-servicos" element={<TipoServicoList />} />
+                    <Route exact path="/tipo-servicos-create" element={<TipoServicoCreate />} />
+                    <Route exact path="/tipo-servicos-create/:tipo_servico_id" element={<TipoServicoCreate />} />
+
+                    <Route exact path="/clientes" element={<ClienteList />} />
+                    <Route exact path="/cliente-create" element={<ClienteCreate />} />
+                    <Route exact path="/cliente-create/:cliente_id" element={<ClienteCreate />} />
+
+                    <Route exact path="/tabelas-preco" element={<TabelaPrecoList />} />
+
+                    <Route exact path="/ordem-servicos/agendamentos" element={<Agendamento />} />
+                    
                 
                     <Route path="/*" element={<NotFound/>} />
                 </Routes>
             </>
         );
     }
+    
 }
 
 export default ContentRoutes;
