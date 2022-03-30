@@ -1,6 +1,7 @@
 {
   "name": "app.servevolution.com",
   "version": "0.1.0",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@asseinfo/react-kanban": "^2.2.0",
