@@ -1,16 +1,25 @@
-import $ from 'jquery'; 
-import "datatables.net-dt/js/dataTables.dataTables";
-
-import React, { Component } from 'react';
+import $ from 'jquery';
 import axios from 'axios';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+
+import { Button } from 'devextreme-react/button';
+
+import DataGrid, {
+    Column,
+    Grouping,
+    GroupPanel,
+    Pager,
+    Paging,
+    SearchPanel,
+  } from 'devextreme-react/data-grid';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import Content from '../../../../Componentes/Content';
 import FuncionarioModel from '../../../../Models/Funcionario.ts';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 class FuncionarioList extends Component {
 
@@ -30,6 +39,12 @@ class FuncionarioList extends Component {
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
+    renderFotoCell(cellData){
+        return (
+            <img className="rounded-circle" width="35" src={ cellData.value || "images/contacts/user.jpg" } alt=""/>
+        );
+    }
+
     getBase64(file) {
 
         return new Promise((resolve, reject) => {
@@ -45,7 +60,7 @@ class FuncionarioList extends Component {
             
         });
 
-     }
+    }
 
     onFileChange(e){
         this.getBase64(e.target.files[0])
@@ -57,42 +72,37 @@ class FuncionarioList extends Component {
 
     componentDidMount() {
 
+        this.getListFuncionarios();
+
+    }
+
+    getListFuncionarios(){
+
+        this.setState({ showLoader: true });
+
         axios.get('/api/funcionario/list')
-            .then((response) => {
+        .then((response) => {
 
-                this.setState({ funcionarios: response.data, showLoader: false }, () => {
-
-                    var table = $('#tabela-funcionarios').DataTable(
-                        {
-                        language: {
-                            paginate: {
-                                next: '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
-                                previous: '<i class="fa fa-angle-double-left" aria-hidden="true"></i>' 
-                            }
-                        }
-                    });
-    
-                    $('#tabela-funcionarios tbody').on('click', 'tr', function () {
-                        var data = table.row( this ).data();
-                    });            
-                    
-                });
-                        
-            })
-            .catch((error) => {
-
-                console.log(error);
-                NotificationManager.error(JSON.stringify(error), 'Erro!');
-
+            this.setState({ funcionarios: response.data, showLoader: false }, () => {
+                //callback                               
             });
+                    
+        })
+        .catch((error) => {
+            NotificationManager.error(JSON.stringify(error), 'Erro!');
+        });
     }
 
     salvarFuncionario() {
+        
+        $("#btn-fechar-modal").trigger("click");
+        this.setState({ showLoader: true });
 
         axios.post('api/funcionario/createOrUpdate', this.state.funcionario)
             .then((response) => {
     
-                $("#btn-fechar-modal").trigger("click");
+                this.getListFuncionarios();
+                //$("#btn-fechar-modal").trigger("click");
     
             })
             .catch((error) => {
@@ -142,46 +152,64 @@ class FuncionarioList extends Component {
 
         if (this.state.funcionarios != null && this.state.funcionarios.length > 0) {
 
+
             return (
-                <div className="table-responsive">
-                    <table id="tabela-funcionarios" className="display" style={{minWidth: 845}}>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nome</th>
-                                <th>Contato Imediato</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            this.state.funcionarios.map((item, index) => {
+                <>
+                    <DataGrid
+                        dataSource={this.state.funcionarios}
+                        allowColumnReordering={true}
+                        rowAlternationEnabled={true}
+                        showBorders={true}
+                    >
+                        <GroupPanel visible={true} />
+                        <SearchPanel visible={true} highlightCaseSensitive={true} />
+                        <Grouping autoExpandAll={false} />
+
+                        <Column 
+                            dataField={ "pessoa.foto" }
+                            cellRender={this.renderFotoCell} 
+                            alignment="center"
+                            width={90}
+                            caption=""
+                        />
+                        <Column  
+                            cellRender={(cellData) => {
+                                return cellData.data.pessoa.razao || cellData.data.pessoa.apelido;
+                            }}
+                        />
+                        <Column 
+                            dataField="pessoa.contatoImediato" 
+                            dataType="string" 
+                        />
+                        <Column 
+                            alignment="center"
+                            caption="Ações"
+                            width={120}
+                            cellRender={(cellData) => {
+                                const { data } = cellData;
                                 return (
-                                    <tr key={index.toString()}>
-                                        <td><img className="rounded-circle" width="35" src={ item.pessoa.foto || "images/contacts/user.jpg" } alt=""/></td>
-                                        <td>{ item.pessoa.razao || item.pessoa.apelido }</td>
-                                        <td>{ item.pessoa.contatoImediato }</td>
-                                        <td>
-                                            <div className="d-flex">
-                                                <Link to={`/app/funcionario-create/${item.id}`} className="btn btn-primary shadow btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></Link>
-                                                <button onClick={ (e) => this.showModalExcluir(e, item) } className="btn btn-danger shadow btn-xs sharp"><i className="fa fa-trash"></i></button>
-                                            </div>												
-                                        </td>												
-                                    </tr>
+                                    <>
+                                        <div className="d-flex">
+                                            <Link to={`/app/funcionario-create/${data.id}`} className="btn btn-primary shadow btn-xs sharp me-1"><i className="fas fa-pencil-alt"></i></Link>
+                                            <button onClick={ (e) => this.showModalExcluir(e, data) } className="btn btn-danger shadow btn-xs sharp"><i className="fa fa-trash"></i></button>
+                                        </div>                                        
+                                    </>
                                 )
-                            })
-                        }                                                    
-                        </tbody>
-                    </table>
-                </div>
+                            }}
+                        />                        
+                        
+                        <Pager allowedPageSizes={[10, 25, 50, 100]} showPageSizeSelector={false} />
+                        <Paging defaultPageSize={10} />
+                    </DataGrid>
+                </>
             );
+
             
-        }
-        else {
+        } else {
             
             return (
                 <>
-                    <div className="alert alert-primary solid alert-dismissible fade show col-6">
+                    <div className="alert alert-primary solid alert-dismissible fade show col-6 col-offset-3">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="me-2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         <strong>Aviso!</strong> Não foi encontrado nenhum funcionário.
                         {/* <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="btn-close"></button> */}
@@ -274,13 +302,24 @@ class FuncionarioList extends Component {
                         <div className="d-flex align-items-center">
                             <button id="add-funcionario-btn" data-bs-toggle="modal" data-bs-target="#add-funcionario-rapido" className="btn btn-primary btn-sm text-white d-none">
                                 <i className="fas fa-address-book"></i>&nbsp;Botao do modal do funcionario
-                            </button>                            
-                            <button onClick={() => this.showCadastroRapido() } className="btn btn-primary btn-sm text-white">
-                                <i className="fas fa-address-book"></i>&nbsp;Cadastro Rápido
-                            </button>
-                            <Link to={`/app/funcionario-create`} className="btn btn-primary btn-sm text-white m-1">
-                                <i className="fas fa-plus"></i>&nbsp;Novo Funcionário
+                            </button>    
+
+                            <Button
+                                text="Cadastro Rápido"
+                                type="normal"
+                                icon='fas fa-address-book'
+                                stylingMode="contained"
+                                onClick={() => this.showCadastroRapido() }
+                            />
+                            <Link to={`/app/funcionario-create`} className="m-1">
+                                <Button
+                                    text="Novo Funcionário"
+                                    type="normal"
+                                    icon='fas fa-plus'
+                                    stylingMode="contained"
+                                />                            
                             </Link>
+
                         </div>
                     </div>
     

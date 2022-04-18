@@ -14,9 +14,11 @@ import ClienteCreate from '../Pages/Dashboard/Cadastros/Cliente/Create';
 import NotFound from '../Pages/NotFound';
 
 import Agendamento from '../Pages/Dashboard/OrdemServico/Agendamento';
+import OrdemServicoCreate from '../Pages/Dashboard/OrdemServico/Create';
 import TabelaPrecoList from '../Pages/Dashboard/Cadastros/TabelaPreco/List';
 
 import PaginaInicial from '../Pages/Dashboard/PaginaInicial';
+import Grid from '../Componentes/Grid';
 
 
 class ContentRoutes extends Component {
@@ -25,6 +27,8 @@ class ContentRoutes extends Component {
         return (
             <>
                 <Routes>
+                    
+                    <Route exact path="/" element={<Grid />} />
                     
                     <Route exact path="/" element={<PaginaInicial />} />
                     
@@ -43,9 +47,11 @@ class ContentRoutes extends Component {
                     <Route exact path="/tabelas-preco" element={<TabelaPrecoList />} />
 
                     <Route exact path="/ordem-servicos/agendamentos" element={<Agendamento />} />
-                    
-                
+                    <Route exact path="/ordem-servico-create" element={<OrdemServicoCreate />} />
+                    <Route exact path="/ordem-servico-create/:ordem_servico_id" element={<OrdemServicoCreate />} />
+                                    
                     <Route path="/*" element={<NotFound/>} />
+                    
                 </Routes>
             </>
         );
