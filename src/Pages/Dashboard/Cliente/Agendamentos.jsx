@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button } from 'devextreme-react/button';
 import Kanban from './Kanban';
 
-
 import DataGrid, {
     Column,
     Grouping,
@@ -21,10 +20,11 @@ import Content from '../../../Componentes/Content';
 import OrdemServicoModel from '../../../Models/OrdemServico.ts';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
-function Agendamento() {
+function AgendamentosCliente() {
 
-    const [showLoader, setShowLoader ] = useState(true);
-    const [agendamentos, setAgendamentos ] = useState([]);
+    const cliente = JSON.parse(localStorage.getItem("usuarioCache")).cliente[0];
+    const [ showLoader, setShowLoader ] = useState(true);
+    const [ agendamentos, setAgendamentos ] = useState([]);
     const [showKanban, setShowKanban] = useState(true);
     const swal = withReactContent(Swal);
     
@@ -36,7 +36,7 @@ function Agendamento() {
 
         setShowLoader(true);
         return new Promise((resolve, reject) => {
-            axios.get('/api/ordem-servicos/list')
+            axios.get(`/api/clientes/list/ordem-servicos/${cliente.id}`)
             .then((response) => {
     
                 setShowLoader(false);
@@ -158,14 +158,14 @@ function Agendamento() {
                     <div className="project-nav justify-content-end">
                         <div className="d-flex align-items-center">
                             
-                            <Link to={`/app/ordem-servico-create`} className="m-1">
+                            {/* <Link to={`/app/ordem-servico-create`} className="m-1">
                                 <Button
                                     text="Novo Agendamento"
                                     type="normal"
                                     icon='fas fa-plus'
                                     stylingMode="contained"
                                 />                            
-                            </Link>
+                            </Link> */}
 
                         </div>
                     </div>
@@ -175,7 +175,7 @@ function Agendamento() {
                             <div className="row dz-scroll  loadmore-content searchable-items list" id="allContactListContent">
                                 <div className="items items-header-section">
                                 </div>
-
+                                
                                 { renderList() }
 
                             </div>
@@ -185,7 +185,7 @@ function Agendamento() {
                 </>
             );
         }
-
+       
     }
 
     return (
@@ -202,4 +202,4 @@ function Agendamento() {
     )
 }
 
-export default Agendamento
+export default AgendamentosCliente

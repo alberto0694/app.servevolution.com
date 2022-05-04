@@ -187,17 +187,14 @@ export default function TipoServicoList() {
                 </>
             );
         }
-
-
-
-        
+ 
     }
 
 	return(
 
 		<>
 		
-			<Content titulo="Lista de Funcionários">
+			<Content titulo="Lista de Tipos de serviços">
 				{ renderPage() }
 			</Content>
 

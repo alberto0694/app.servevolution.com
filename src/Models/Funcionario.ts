@@ -1,6 +1,5 @@
 import Pessoa from "./Pessoa";
 
-
 export default class Funcionario {
 
     pessoa:Pessoa = null;    

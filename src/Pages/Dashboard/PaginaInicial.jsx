@@ -1,12 +1,12 @@
 import React from 'react';
-import Cards from '../../Componentes/Cards';
 import Content from '../../Componentes/Content';
+import Kanban from './OrdemServico/Kanban';
 
 export default function PaginaInicial() {
   return (
     <>
         <Content titulo="Página Inicial">
-            <Cards />
+          <Kanban />
         </Content>
     </>
   )

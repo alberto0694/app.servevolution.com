@@ -9,6 +9,7 @@ import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import Content from '../../../../Componentes/Content';
 import ClienteModel from '../../../../Models/Cliente';
+import Loading from '../../../../Componentes/Loading';
 
 export default function Cliente() {
 
@@ -152,15 +153,7 @@ export default function Cliente() {
 
         if(showLoader){
 
-            return (
-                <>
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </>
-            );
+            return <Loading />
 
         } else {
 
@@ -184,30 +177,19 @@ export default function Cliente() {
     
                             </div>
                         </div>
-                    </div>
-    
+                    </div>    
                 </>
             );
-        }
-
-
-
-        
+        }       
     }
 
 	return(
-
-		<>
-		
+		<>		
 			<Content titulo="Lista de Funcionários">
 				{ renderPage() }
 			</Content>
 
 			<NotificationContainer />
 		</>
-
-		
 	)
-	
-
 }

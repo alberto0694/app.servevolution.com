@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import DateBox from 'devextreme-react/date-box';
 import withReactContent from 'sweetalert2-react-content';
 import Popup from 'devextreme-react/popup';
 import { TextBox } from 'devextreme-react/text-box';
 import { TextArea } from 'devextreme-react/text-area';
 import { Button } from 'devextreme-react/button';
 import { SelectBox } from 'devextreme-react/select-box';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NumberBox } from 'devextreme-react/number-box';
 import DataGrid, {
     Column,
     Lookup,
@@ -25,6 +27,7 @@ import OrdemServico from '../../../Models/OrdemServico';
 import OrdemServicoCusto from '../../../Models/OrdemServicoCusto';
 import Funcionario from '../../../Models/Funcionario';
 import Content from '../../../Componentes/Content';
+import Loading from '../../../Componentes/Loading';
 
 export default function OrdemServicoCreate() {
 
@@ -38,11 +41,9 @@ export default function OrdemServicoCreate() {
 
     const [ordemServico, setOrdemServico] = useState(new OrdemServico());
     const [selectedFuncionario, setSelectedFuncionario] = useState(new Funcionario());
-    const [focusedFuncionario, setFocusedFuncionario] = useState(new Funcionario());
+    const [focusedFuncionarios, setFocusedFuncionarios] = useState(new Funcionario());
     const [edtCusto, setEdtCusto] = useState(new OrdemServicoCusto());
-    const [custosFocusedFuncionario, setCustosFocusedFuncionario] = useState([]);
-
-
+    const [custosFocusedFuncionarios, setCustosFocusedFuncionarios] = useState([]);
 
     const [redirect, setRedirect] = useState(false);
     const [showLoader, setShowLoader] = useState(true);
@@ -65,16 +66,23 @@ export default function OrdemServicoCreate() {
 
     useEffect((e) => {
 
-        if (focusedFuncionario.id) {
+        console.log('focusedFuncionario', focusedFuncionarios);
+        if (focusedFuncionarios.length == 1) {
             const c = ordemServico.custos.filter((custo) => {
-                return custo.ordem_servico_funcionario.funcionario_id == focusedFuncionario.id;
+                return custo.ordem_servico_funcionario.funcionario_id == focusedFuncionarios[0].id;
             });
-            setCustosFocusedFuncionario(c);
+            setCustosFocusedFuncionarios(c);
+        } else {
+            const c = ordemServico.custos.filter((custo) => {
+                return focusedFuncionarios.map(f => f.id).includes(custo.ordem_servico_funcionario.funcionario_id);
+            });
+            setCustosFocusedFuncionarios(c);
         }
 
-    }, [focusedFuncionario]);
+    }, [focusedFuncionarios]);
 
     const handleChange = function (value, attr) {
+        console.log(value);
         ordemServico[attr] = value;
         setOrdemServico({ ...ordemServico });
     };
@@ -157,8 +165,38 @@ export default function OrdemServicoCreate() {
         setSelectedFuncionario(new Funcionario());
     }
 
-    const adicionarCusto = () => {
-        console.log('ordemServico.custos, edtCusto', ordemServico.custos, edtCusto);
+    const removerFuncionario = () => {
+        swal.fire({
+            title: 'Retirar funcionário',
+            text: `Deseja realmente retirar ${focusedFuncionarios[0].pessoa.razao || focusedFuncionarios[0].pessoa.apelido} desta ordem de serviço?`,
+            icon: 'question',
+            confirmButtonText: 'Sim',
+            showCancelButton: true,
+            cancelButtonText: 'Não, cancelar',
+        })
+            .then((response) => {
+
+                if (response.isConfirmed) {
+
+                    if (ordemServico.id && focusedFuncionarios[0].id) {
+                        axios.post(`api/ordem-servicos/funcionario/delete/${ordemServico.id}/${focusedFuncionarios[0].id}`, ordemServico)
+                            .then((response) => {
+                                setOrdemServico(response.data);
+                                NotificationManager.success('Funcionário removido', 'Excluído com sucesso!');
+                            })
+                            .catch((error) => {
+                                NotificationManager.error(JSON.stringify(error), 'Erro ao excluir!');
+                            });
+
+                    } else {
+
+                    }
+
+                }
+            });
+    }
+
+    const adicionarCusto = () => {    
         ordemServico.custos = [...ordemServico.custos, edtCusto];
         setOrdemServico({ ...ordemServico });
         setEdtCusto(new OrdemServicoCusto());
@@ -166,23 +204,22 @@ export default function OrdemServicoCreate() {
 
     const openAddCusto = () => {
 
-        if (focusedFuncionario.id) {
-            edtCusto.ordem_servico_funcionario.funcionario_id = focusedFuncionario.id;
+        if (focusedFuncionarios.length == 1) {
+            edtCusto.ordem_servico_funcionario.funcionario_id = focusedFuncionarios[0].id;
             setEdtCusto({ ...edtCusto });
             setAddCustoVisible(true);
         } else {
-            alert('selecione um funcionario');
+            NotificationManager.warning('Selecione somente um funcionário!', "Verifique");
         }
-
     }
 
     const renderGrid = () => {
-        const src = focusedFuncionario.id ? custosFocusedFuncionario : ordemServico.custos;
 
         return (
             <>
                 <DataGrid
-                    dataSource={src}
+                    className='border-list'
+                    dataSource={custosFocusedFuncionarios}
                     allowColumnReordering={true}>
                     <Column
                         dataField="tipo_custo_id"
@@ -206,12 +243,12 @@ export default function OrdemServicoCreate() {
                         cellRender={(data) => {
                             return (
                                 <>
-                                    <Button
-                                        type="normal"
-                                        icon='fas fa-plus'
-                                        stylingMode="contained"
-                                        onClick={() => 0}
-                                    />
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-sm"
+                                    >
+                                        <i className="fas fa-plus"></i>
+                                    </button>                                    
                                 </>
                             );
                         }}
@@ -219,22 +256,113 @@ export default function OrdemServicoCreate() {
                     />
                 </DataGrid>
             </>
-        );        
+        );
+    }
+
+    const renderPopEditCusto = () => {
+
+        if(focusedFuncionarios.length != 1) return <></>;
+
+        return (
+            <>
+                <Popup
+                    width={660}
+                    height={540}
+                    showTitle={true}
+                    title={'Custos de Funcionário'}
+                    dragEnabled={false}
+                    closeOnOutsideClick={true}
+                    visible={addCustoVisible}
+                    onHiding={() => { 
+                        setAddCustoVisible(false) 
+                    }}
+                    contentRender={() => {
+                        return (
+                        <>
+                            <form>
+                                <div className="row">
+
+                                    <div className="form-group col-12">
+                                        <div className="read-content">
+                                            <div className="media pt-3 d-sm-flex d-block justify-content-between">
+                                                <div className="clearfix d-flex">
+                                                    <img className="me-3 rounded" width="70" height="70" alt="image" src={focusedFuncionarios[0].pessoa.foto ?? "images/contacts/user.jpg"} />
+                                                    <div className="media-body me-2">
+                                                        <h5 className="text-primary mb-0 mt-1">{focusedFuncionarios[0].pessoa.razao || focusedFuncionarios[0].pessoa.apelido}</h5>
+                                                        <p className="mb-0">{focusedFuncionarios[0].pessoa.contatoImediato}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group col-4">
+                                        <label>Custo</label>
+                                        <SelectBox
+                                            dataSource={tipoCustos}
+                                            displayExpr="descricao"
+                                            searchEnabled={true}
+                                            searchMode='contains'
+                                            searchExpr='descricao'
+                                            searchTimeout={200}
+                                            minSearchLength={3}
+                                            valueExpr='id'
+                                            value={edtCusto.tipo_custo_id}
+                                            showDataBeforeSearch={true}
+                                            onValueChange={(value) => {
+                                                setEdtCusto({ ...edtCusto, tipo_custo_id: value })
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div className="form-group col-3">
+                                        <label>Valor</label>
+                                        <NumberBox
+                                            className="form-control"
+                                            defaultValue={0}
+                                            showSpinButtons={true}
+                                            value={edtCusto.valor}
+                                            format={{                                           
+                                                style: "currency", 
+                                                currency: "BRL"
+                                            }}
+                                            onValueChange={(value) => {
+                                                setEdtCusto({ ...edtCusto, valor: value })
+                                            }}
+                                        />                                        
+                                    </div>
+
+                                    <div className="form-group col-3">
+                                        <label>&nbsp;</label>
+                                        <div>
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary"
+                                                onClick={() => {
+                                                    setAddCustoVisible(false);
+                                                    adicionarCusto();
+                                                }}
+                                            >
+                                                <i className="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </>)
+                    }}
+                />
+
+            </>
+        )
     }
 
     const renderPage = () => {
 
         if (showLoader) {
 
-            return (
-                <>
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </>
-            );
+            return <Loading />
 
         } else {
 
@@ -242,17 +370,29 @@ export default function OrdemServicoCreate() {
                 <>
                     <form>
                         <div className="row">
-
                             <div className="form-group col-3">
-                                <label>Titulo</label>
-                                <TextBox
-                                    className="form-control"
-                                    value={ordemServico.titulo}
-                                    onValueChange={(value) => handleChange(value, 'titulo')}
+                                <label>Data</label>
+                                <DateBox 
+                                    defaultValue={new Date()}
+                                    value={ordemServico.data}
+                                    showClearButton={true}
+                                    displayFormat="dd/MM/yyyy" 
+                                    onValueChange={(value) => handleChange(value, 'data')}
+                                />
+                            </div>
+                            <div className="form-group col-2">
+                                <label>Hora</label>
+                                <DateBox 
+                                    type="time"
+                                    defaultValue={new Date()}
+                                    value={ordemServico.hora}
+                                    showClearButton={true}
+                                    displayFormat="HH:mm" 
+                                    onValueChange={(value) => handleChange(value, 'hora')}
                                 />
                             </div>
 
-                            <div className="form-group col-4">
+                            <div className="form-group col-3">
                                 <label>Serviço</label>
                                 <SelectBox
                                     dataSource={tipoServicos}
@@ -269,21 +409,22 @@ export default function OrdemServicoCreate() {
                                 />
                             </div>
 
-                            <div className="form-group col-5">
+                            <div className="form-group col-4">
                                 <label>Cliente</label>
                                 <SelectBox
                                     dataSource={clientes}
-                                    displayExpr="pessoa.razao"
+                                    displayExpr={(item) => {
+                                        return item?.pessoa.razao || item?.pessoa.apelido
+                                    }}
                                     searchEnabled={true}
                                     searchMode='contains'
-                                    searchExpr='pessoa.razao'
+                                    searchExpr={['pessoa.razao', 'pessoa.apelido']}
                                     searchTimeout={200}
                                     minSearchLength={3}
                                     showDataBeforeSearch={true}
                                     valueExpr='id'
                                     value={ordemServico.cliente_id}
                                     onValueChange={(value) => handleChange(value, 'cliente_id')}
-
                                 />
                             </div>
 
@@ -297,14 +438,11 @@ export default function OrdemServicoCreate() {
                             </div>
 
                             <div className="container m-0 p-4 col-5">
-                                <div className="form-group  row">
+                                <div className="form-group row mb-7px">
                                     <label>Escolha um funcionário para adicionar</label>
-                                    <div className="col-8">
+                                    <div className="col-10">
                                         <SelectBox
                                             dataSource={funcionarios}
-                                            // itemTemplate={(funcionario) => {
-                                            //     return funcionario.pessoa.razao || funcionario.pessoa.apelido;
-                                            // }}
                                             displayExpr="pessoa.apelido"
                                             searchEnabled={true}
                                             searchMode='contains'
@@ -321,45 +459,32 @@ export default function OrdemServicoCreate() {
                                         />
                                     </div>
 
-                                    <div className="col-4">
-                                        <Button
-                                            type="normal"
-                                            icon='fas fa-plus'
-                                            stylingMode="contained"
+                                    <div className="col-1 p-0">
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm"
                                             onClick={adicionarFuncionario}
-                                        />
+                                        >
+                                            <i className="fas fa-plus"></i>
+                                        </button>
                                     </div>
-
                                 </div>
 
-                                <div className="form-group">
-                                    <List
-                                        dataSource={[
-                                            {
-                                                descricao: "Todos",
-                                                id: 0
-                                            }
-                                        ]}
-                                        className="m-0"
-                                        style={{ background: 'white' }}
-                                        itemRender={(funcionario) => {
-                                            return funcionario.descricao
-                                        }}
-                                        valueExpr='id'
-                                        onItemClick={(event) => {
-                                            setFocusedFuncionario(new Funcionario());
-                                        }}
-                                    />
+                                <div className="form-group border-list">                                    
                                     <List
                                         dataSource={ordemServico.funcionarios}
+                                        selectionMode="all"
                                         className="m-0"
+                                        showSelectionControls={true}
                                         style={{ background: 'white' }}
                                         itemRender={(funcionario) => {
                                             return funcionario.pessoa.razao || funcionario.pessoa.apelido;
                                         }}
                                         valueExpr='id'
-                                        onItemClick={(event) => {
-                                            setFocusedFuncionario(event.itemData);
+                                        onOptionChanged={(e) => {                                            
+                                            if(e.name == "selectedItemKeys"){
+                                                setFocusedFuncionarios(e.value);                                                
+                                            }
                                         }}
                                     />
                                 </div>
@@ -373,51 +498,23 @@ export default function OrdemServicoCreate() {
                                             <div className="read-content">
                                                 <div className="media pt-3 d-sm-flex d-block justify-content-between">
                                                     <div className="clearfix d-flex">
-                                                        <img className="me-3 rounded" width="70" height="70" alt="image" src={ focusedFuncionario.pessoa.foto ?? "images/contacts/user.jpg" } />
+                                                        <img className="me-3 rounded" width="70" height="70" alt="image" src={focusedFuncionarios.length == 1 ? focusedFuncionarios[0].pessoa.foto ?? "images/contacts/user.jpg" : "images/contacts/user.jpg"} />
                                                         <div className="media-body me-2">
-                                                            <h5 className="text-primary mb-0 mt-1">{focusedFuncionario.pessoa.razao || focusedFuncionario.pessoa.apelido}</h5>
-                                                            <p className="mb-0">{focusedFuncionario.pessoa.contatoImediato}</p>
+                                                            <h5 className="text-primary mb-0 mt-1">{focusedFuncionarios.length == 1 ? focusedFuncionarios[0].pessoa.razao || focusedFuncionarios[0].pessoa.apelido : `${focusedFuncionarios.length} funcionários selecionados`}</h5>
+                                                            <p className="mb-0">{focusedFuncionarios.length == 1 ? focusedFuncionarios[0].pessoa.contatoImediato : ''}</p>
                                                         </div>
                                                     </div>
                                                     <div className="clearfix">
                                                         <Button
                                                             type="danger"
-                                                            visible={Boolean(focusedFuncionario.id)}
+                                                            visible={Boolean(focusedFuncionarios.length == 1)}
                                                             icon='fas fa-trash'
                                                             stylingMode="contained"
-                                                            onClick={() => {
-                                                                swal.fire({
-                                                                    title: 'Retirar funcionário',
-                                                                    text: `Deseja realmente retirar ${focusedFuncionario.pessoa.razao || focusedFuncionario.pessoa.apelido} desta ordem de serviço?`,
-                                                                    icon: 'question',
-                                                                    confirmButtonText: 'Sim',
-                                                                    showCancelButton: true,
-                                                                    cancelButtonText: 'Não, cancelar',
-                                                                })
-                                                                .then((response) => {
-                                                                    
-                                                                    if(response.isConfirmed){                
-                                                                    
-                                                                        if(ordemServico.id && focusedFuncionario.id){
-                                                                            axios.post(`api/ordem-servicos/funcionario/delete/${ordemServico.id}/${focusedFuncionario.id}`, ordemServico)
-                                                                            .then((response) => {                                                                                 
-                                                                                setOrdemServico(response.data);
-                                                                                NotificationManager.success('Funcionário removido', 'Excluído com sucesso!');
-                                                                            })
-                                                                            .catch((error) => {
-                                                                                NotificationManager.error(JSON.stringify(error), 'Erro ao excluir!');
-                                                                            });
-                                                                        } else {
-
-                                                                        }
-                                                                        
-                                                                    }
-                                                                });
-                                                            }}
+                                                            onClick={() => removerFuncionario() }
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="media mb-2">
+                                                <div className="media mb-2 mt-2">
 
                                                     {renderGrid()}
 
@@ -452,7 +549,7 @@ export default function OrdemServicoCreate() {
                                     text="Cancelar"
                                     type="danger"
                                     width={110}
-                                    height={30}                                   
+                                    height={30}
                                     className="m-3"
                                     icon='fas fa-arrow-left'
                                     stylingMode="contained"
@@ -477,71 +574,7 @@ export default function OrdemServicoCreate() {
                 {renderPage()}
             </Content>
 
-            <Popup
-                width={660}
-                height={540}
-                showTitle={true}
-                title={'titulo do modal'}
-                dragEnabled={false}
-                closeOnOutsideClick={true}
-                visible={addCustoVisible}
-                onHiding={() => { setAddCustoVisible(false) }}
-                contentRender={() => {
-                    return (<>
-                        <form>
-                            <div className="row">
-
-                                <div className="form-group col-4">
-                                    <label>Custo</label>
-                                    <SelectBox
-                                        dataSource={tipoCustos}
-                                        displayExpr="descricao"
-                                        searchEnabled={true}
-                                        searchMode='contains'
-                                        searchExpr='descricao'
-                                        searchTimeout={200}
-                                        minSearchLength={3}
-                                        valueExpr='id'
-                                        value={edtCusto.tipo_custo_id}
-                                        showDataBeforeSearch={true}
-                                        onValueChange={(value) => {
-                                            setEdtCusto({ ...edtCusto, tipo_custo_id: value })
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="form-group col-3">
-                                    <label>Valor</label>
-                                    <TextBox
-                                        className="form-control"
-                                        value={edtCusto.valor}
-                                        onValueChange={(value) => {
-                                            setEdtCusto({ ...edtCusto, valor: value })
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="form-group col-3">
-                                    <label>&nbsp;</label>
-                                    <Button
-                                        type="normal"
-                                        text='Adicionar'
-                                        icon='fas fa-plus'
-                                        stylingMode="contained"
-                                        onClick={() => {
-                                            setAddCustoVisible(false);
-                                            adicionarCusto();
-                                        }}
-                                    />
-                                </div>
-
-
-
-                            </div>
-                        </form>
-                    </>)
-                }}                
-            />
+            {renderPopEditCusto()}
 
             <NotificationContainer />
         </>

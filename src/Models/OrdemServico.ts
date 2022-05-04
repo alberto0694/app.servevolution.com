@@ -7,6 +7,8 @@ export default class OrdemServico{
 
     titulo: string = "";
     descricao: string = "";
+    data: Date;
+    hora: Date;
     cliente: Cliente = null;
     tipoServico: TipoServico = null;
     cliente_id: number;
