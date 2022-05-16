@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import axios from 'axios';
 
+import './index.css';
+
 //axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
 

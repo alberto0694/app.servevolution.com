@@ -22,7 +22,7 @@
   
   #kanban .scrollable-list {
     height: 400px;
-    width: 260px;
+    width: 360px;
   }
   
   #kanban .sortable-cards {
@@ -33,8 +33,8 @@
     position: relative;
     background-color: white;
     box-sizing: border-box;
-    width: 230px;
-    padding: 10px 20px;
+    width: 330px;
+    padding: 10px 5px 5px 20px;
     margin: 10px;
     cursor: pointer;
   }

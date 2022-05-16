@@ -5,20 +5,14 @@ import Swal from 'sweetalert2';
 import DateBox from 'devextreme-react/date-box';
 import withReactContent from 'sweetalert2-react-content';
 import Popup from 'devextreme-react/popup';
-import { TextBox } from 'devextreme-react/text-box';
 import { TextArea } from 'devextreme-react/text-area';
 import { Button } from 'devextreme-react/button';
 import { SelectBox } from 'devextreme-react/select-box';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import { NumberBox } from 'devextreme-react/number-box';
 import DataGrid, {
     Column,
-    Lookup,
-    Grouping,
-    GroupPanel,
-    Pager,
-    Paging,
-    SearchPanel,
+    Lookup
 } from 'devextreme-react/data-grid';
 import List from 'devextreme-react/list';
 
@@ -66,7 +60,6 @@ export default function OrdemServicoCreate() {
 
     useEffect((e) => {
 
-        console.log('focusedFuncionario', focusedFuncionarios);
         if (focusedFuncionarios.length == 1) {
             const c = ordemServico.custos.filter((custo) => {
                 return custo.ordem_servico_funcionario.funcionario_id == focusedFuncionarios[0].id;
@@ -82,7 +75,6 @@ export default function OrdemServicoCreate() {
     }, [focusedFuncionarios]);
 
     const handleChange = function (value, attr) {
-        console.log(value);
         ordemServico[attr] = value;
         setOrdemServico({ ...ordemServico });
     };
@@ -92,7 +84,7 @@ export default function OrdemServicoCreate() {
             axios.get(`api/ordem-servicos/get/${ordem_servico_id}`)
                 .then((response) => {
 
-                    setOrdemServico({ ...response.data });
+                    setOrdemServico(response.data);
                     setShowLoader(false);
                 })
                 .catch((error) => {
@@ -116,30 +108,42 @@ export default function OrdemServicoCreate() {
     const getFuncionarios = () => {
         axios.get(`api/funcionario/list`)
             .then((response) => {
-                setFuncionarios(response.data);
+                if(response.data.status === false){
+                    NotificationManager.error(response.data.message, 'Ordem de Serviço');                    
+                } else {
+                    setFuncionarios(response.data);
+                }                
             })
             .catch((error) => {
-                console.log('error', error);
-            });
-    };
-
-    const getTipoServicos = () => {
-        axios.get(`api/tipo-custos/list`)
-            .then((response) => {
-                setTipoCustos(response.data);
-            })
-            .catch((error) => {
-                console.log('error', error);
+                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
             });
     };
 
     const getTipoCustos = () => {
-        axios.get(`api/tipo-servicos/list`)
-            .then((response) => {
-                setTipoServicos(response.data);
+        axios.get(`api/tipo-custos/list`)
+            .then((response) => {                
+                if(response.data.status === false){
+                    NotificationManager.error(response.data.message, 'Ordem de Serviço');                    
+                } else {
+                    setTipoCustos(response.data);
+                }                 
             })
             .catch((error) => {
-                console.log('error', error);
+                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
+            });
+    };
+
+    const getTipoServicos = () => {
+        axios.get(`api/tipo-servicos/list`)
+            .then((response) => {
+                if(response.data.status === false){
+                    NotificationManager.error(response.data.message, 'Ordem de Serviço');                    
+                } else {
+                    setTipoServicos(response.data);
+                }                                 
+            })
+            .catch((error) => {
+                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
             });
     };
 
@@ -149,12 +153,15 @@ export default function OrdemServicoCreate() {
 
         axios.post('api/ordem-servicos/createOrUpdate', ordemServico)
             .then((response) => {
-
-                setRedirect(true);
-
+                setShowLoader(false);
+                if(response.data.status === false){
+                    NotificationManager.error(response.data.message, 'Ordem de Serviço');
+                } else {
+                    setRedirect(true);
+                }            
             })
             .catch((error) => {
-                console.log('error', error);
+                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
             });
 
     };
@@ -166,6 +173,7 @@ export default function OrdemServicoCreate() {
     }
 
     const removerFuncionario = () => {
+
         swal.fire({
             title: 'Retirar funcionário',
             text: `Deseja realmente retirar ${focusedFuncionarios[0].pessoa.razao || focusedFuncionarios[0].pessoa.apelido} desta ordem de serviço?`,
@@ -182,14 +190,11 @@ export default function OrdemServicoCreate() {
                         axios.post(`api/ordem-servicos/funcionario/delete/${ordemServico.id}/${focusedFuncionarios[0].id}`, ordemServico)
                             .then((response) => {
                                 setOrdemServico(response.data);
-                                NotificationManager.success('Funcionário removido', 'Excluído com sucesso!');
+                                NotificationManager.success('Funcionário removido', 'Funcionário');
                             })
                             .catch((error) => {
-                                NotificationManager.error(JSON.stringify(error), 'Erro ao excluir!');
+                                NotificationManager.error(JSON.stringify(error), 'Erro ao excluir');
                             });
-
-                    } else {
-
                     }
 
                 }
@@ -296,7 +301,7 @@ export default function OrdemServicoCreate() {
                                         </div>
                                     </div>
 
-                                    <div className="form-group col-4">
+                                    <div className="form-group col-7">
                                         <label>Custo</label>
                                         <SelectBox
                                             dataSource={tipoCustos}
@@ -332,7 +337,7 @@ export default function OrdemServicoCreate() {
                                         />                                        
                                     </div>
 
-                                    <div className="form-group col-3">
+                                    <div className="form-group col-2">
                                         <label>&nbsp;</label>
                                         <div>
                                             <button
@@ -443,10 +448,12 @@ export default function OrdemServicoCreate() {
                                     <div className="col-10">
                                         <SelectBox
                                             dataSource={funcionarios}
-                                            displayExpr="pessoa.apelido"
+                                            displayExpr={(item) => {
+                                                return item?.pessoa.razao || item?.pessoa.apelido
+                                            }}
                                             searchEnabled={true}
                                             searchMode='contains'
-                                            searchExpr='pessoa.razao'
+                                            searchExpr={['pessoa.razao', 'pessoa.apelido']}
                                             searchTimeout={200}
                                             minSearchLength={3}
                                             showDataBeforeSearch={true}
@@ -575,8 +582,6 @@ export default function OrdemServicoCreate() {
             </Content>
 
             {renderPopEditCusto()}
-
-            <NotificationContainer />
         </>
     )
 }

@@ -5,6 +5,7 @@ import Container from "./Pages/Container";
 import AuthRoute from "./Routes/AuthRoute";
 import history from './Componentes/History';
 import ScrollToTop from "./Componentes/ScrollToTop";
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 import 'devextreme/dist/css/dx.light.css';
 import 'react-notifications/lib/notifications.css';
@@ -34,6 +35,8 @@ export default class App extends Component {
 
 					</Routes>
 				</BrowserRouter>
+
+				<NotificationContainer/>
 			</>
 
 		);

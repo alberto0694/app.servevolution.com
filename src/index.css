@@ -1,0 +1,32 @@
+.dx-button-has-icon .dx-button-content {
+    padding: 8px !important;
+}
+
+.ml-1 {
+    margin-left: 1rem;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: end;
+}
+
+.w-full {
+    width: 100%;
+    display: block;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.mb-1{
+    margin-bottom: 2rem;
+}
+
+.cursor-pointer {
+    cursor:pointer
+}

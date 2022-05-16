@@ -14,7 +14,6 @@ import ClienteCreate from '../Pages/Dashboard/Cadastros/Cliente/Create';
 import NotFound from '../Pages/NotFound';
 
 import Agendamento from '../Pages/Dashboard/OrdemServico/Agendamento';
-import AgendamentosCliente from '../Pages/Dashboard/Cliente/Agendamentos';
 import OrdemServicoCreate from '../Pages/Dashboard/OrdemServico/Create';
 import TabelaPrecoList from '../Pages/Dashboard/Cadastros/TabelaPreco/List';
 
@@ -49,7 +48,7 @@ class ContentRoutes extends Component {
                     <Route exact path="/ordem-servico-create/:ordem_servico_id" element={<OrdemServicoCreate />} />
 
 
-                    <Route exact path="/cliente/agendamentos" element={<AgendamentosCliente />} />
+                    <Route exact path="/cliente/agendamentos" element={<Agendamento />} />
                                     
                     <Route path="/*" element={<NotFound/>} />
                     
