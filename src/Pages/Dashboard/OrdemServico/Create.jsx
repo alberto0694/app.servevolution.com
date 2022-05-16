@@ -195,6 +195,8 @@ export default function OrdemServicoCreate() {
                             .catch((error) => {
                                 NotificationManager.error(JSON.stringify(error), 'Erro ao excluir');
                             });
+                    } else {
+                        
                     }
 
                 }
@@ -205,6 +207,7 @@ export default function OrdemServicoCreate() {
         ordemServico.custos = [...ordemServico.custos, edtCusto];
         setOrdemServico({ ...ordemServico });
         setEdtCusto(new OrdemServicoCusto());
+        setFocusedFuncionarios([...focusedFuncionarios]);
     }
 
     const openAddCusto = () => {
@@ -542,26 +545,25 @@ export default function OrdemServicoCreate() {
                             </div>
 
                             <div className="form-group">
-                                <Button
-                                    text="Salvar"
-                                    type="success"
-                                    width={110}
-                                    height={30}
-                                    icon='fas fa-save'
-                                    stylingMode="contained"
-                                    onClick={() => salvarOrdemServico()}
-                                />
+                                <div className="d-flex justify-end">
+                                    <Button
+                                        text="Salvar"
+                                        type="success"
+                                        icon='fas fa-save'
+                                        stylingMode="contained"
+                                        onClick={() => salvarOrdemServico()}
+                                    />
 
-                                <Button
-                                    text="Cancelar"
-                                    type="danger"
-                                    width={110}
-                                    height={30}
-                                    className="m-3"
-                                    icon='fas fa-arrow-left'
-                                    stylingMode="contained"
-                                    onClick={() => history.back()}
-                                />
+                                    <Button
+                                        text="Cancelar"
+                                        type="danger"
+                                        className="ml-1"
+                                        icon='fas fa-arrow-left'
+                                        stylingMode="contained"
+                                        onClick={() => history.back()}
+                                    />
+                                </div>
+                                
                             </div>
 
                         </div>
