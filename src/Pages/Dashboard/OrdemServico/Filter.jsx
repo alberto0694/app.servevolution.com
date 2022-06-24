@@ -110,9 +110,7 @@ export default function Filter({callbackFilter}) {
                         showClearButton={true}
                         dataSource={funcionarios}
                         itemRender={renderFuncionarioItem}
-                        displayExpr={(item) => {
-                            return item?.pessoa.razao || item?.pessoa.apelido
-                        }}
+                        displayExpr='pessoa.normalized_name'
                         valueExpr="id"
                         selectedItems={filterData.funcionarios}
                         onValueChanged={(item) => {

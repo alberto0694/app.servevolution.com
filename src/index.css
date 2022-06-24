@@ -14,6 +14,10 @@
     justify-content: end;
 }
 
+.justify-space-between {
+    justify-content: space-between;
+}
+
 .w-full {
     width: 100%;
     display: block;
@@ -29,4 +33,31 @@
 
 .cursor-pointer {
     cursor:pointer
+}
+
+.disable-click{
+    pointer-events: none;
+}
+
+.tab-container{
+    border: 1px solid #dddddd;
+    padding: 10px;
+    margin-left: 0 !important;
+    min-height: 350px;
+}
+
+.color-red {
+    color: #d9534f
+}
+
+.color-blue {
+    color: #337ab7
+}
+
+.color-green {
+    color: #5cb85c
+}
+
+.color-orange {
+    color: #f89406
 }

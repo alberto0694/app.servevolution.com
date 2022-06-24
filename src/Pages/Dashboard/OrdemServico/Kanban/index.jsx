@@ -1,66 +1,67 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Popup from 'devextreme-react/popup';
 import DateBox from 'devextreme-react/date-box';
 import { TextArea } from 'devextreme-react/text-area';
 import { Button } from 'devextreme-react/button';
 import { SelectBox } from 'devextreme-react/select-box';
-import Board, { moveCard } from '@asseinfo/react-kanban';
+import Board from '@asseinfo/react-kanban';
 import { NotificationManager } from 'react-notifications';
 import moment from 'moment';
-import '@asseinfo/react-kanban/dist/styles.css';
-
-import './Index.css';
+import { useNavigate } from "react-router-dom";
 import Card from './Card';
 import Loading from '../../../../Componentes/Loading';
-import Filter from '../Filter';
-import history from '../../../../Componentes/History';
+import DropDownButton from 'devextreme-react/drop-down-button';
+//import history from '../../../../Componentes/History';
 
-export default function Index({ showLoaderParam }) {
+import '@asseinfo/react-kanban/dist/styles.css';
+import './Index.css';
 
-    const [showLoader, setShowLoader] = useState(showLoaderParam);
+
+
+export default function Index({ agendamentos }) {
+
+    const navigate = useNavigate();
+    
+    const actionsCard = [
+        { 
+            text: 'Editar', 
+            icon: 'fas fa-edit', 
+            class: "color-blue",
+            action: (data) => {
+                navigate(`/app/ordem-servico-create/${data.id}`)
+            }
+        },
+        {
+            text: 'Finalizar', 
+            icon: 'fas fa-end', 
+            class: "color-orange",
+            action: (data) => {
+                return;
+            }
+        },
+        { 
+            text: 'Excluir', 
+            icon: 'fas fa-trash', 
+            class: "color-red",
+            action: (data) => {
+                return;
+            }        
+        }
+    ];
+
     const [showLoaderOrdemServico, setShowLoaderOrdemServico] = useState(false);
-    const [agendamentos, setAgendamentos] = useState({ columns: [] });
     const [showOrdemServico, setShowOrdemServico] = useState(false);
     const [ordemServico, setOrdemServico] = useState({});
     const [tipoServicos, setTipoServicos] = useState([]);
     const [clientes, setClientes] = useState([]);
-
-    useEffect(() => {
-        getListOrdemServico();
-    }, []);
-
-    const getListOrdemServico = (dataFilter) => {
-
-        setShowLoader(true);
-        return new Promise((resolve, reject) => {
-
-            const usuario = JSON.parse(localStorage.getItem("usuarioCache"));
-            const queryParam = usuario.cliente?.length > 0 ? `cliente_id=${usuario.cliente[0].id}` : '';
-
-            axios.post(`/api/ordem-servicos/list-kanban?${queryParam}`, dataFilter || {})
-                .then((response) => {
-                    setShowLoader(false);
-                    if (response.data.status === false) {
-                        NotificationManager.error(response.data.message, 'Ordem de Serviço');
-                    } else {
-                        setAgendamentos({ columns: response.data });
-                    }
-                    resolve(response);
-                })
-                .catch((error) => {
-                    setShowLoader(false);
-                    NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
-                    reject(error);
-                });
-        });
-    };
 
     const getOrdemServico = (ordem_servico_id) => {
         return axios.get(`api/ordem-servicos/get/${ordem_servico_id}`);
     };
 
     const onCardClick = ({ id }) => {
+
         setShowLoaderOrdemServico(true);
         setShowOrdemServico(true);
         getOrdemServico(id)
@@ -80,10 +81,10 @@ export default function Index({ showLoaderParam }) {
             });
     }
 
-    const onCardDragEnd = (board, source, destination) => {
-        const localAgendamentos = moveCard(agendamentos, source, destination);
-        setAgendamentos(localAgendamentos);
-    }
+    // const onCardDragEnd = (board, source, destination) => {
+    //     //const localAgendamentos = moveCard(agendamentos, source, destination);
+    //     //setAgendamentos(localAgendamentos);
+    // }
 
     const renderOrdemServicoPopUp = () => {
 
@@ -104,10 +105,9 @@ export default function Index({ showLoaderParam }) {
                     contentRender={() => {
 
                         if (showLoaderOrdemServico) {
-
                             return <Loading />
-
                         }
+
                         return (
                             <>
                                 <form>
@@ -118,9 +118,7 @@ export default function Index({ showLoaderParam }) {
                                             <SelectBox
                                                 disabled={true}
                                                 dataSource={clientes}
-                                                displayExpr={(item) => {
-                                                    return item?.pessoa.razao || item?.pessoa.apelido
-                                                }}
+                                                displayExpr='pessoa.normalized_name'
                                                 searchEnabled={true}
                                                 searchMode='contains'
                                                 searchExpr={['pessoa.razao', 'pessoa.apelido']}
@@ -220,62 +218,79 @@ export default function Index({ showLoaderParam }) {
         )
     }
 
-
-    const renderKanban = () => {
-        if (showLoader) {
-
-            return <Loading />
-
-        } else {
-            return (
-                <>
-                    <Board
-                        onCardDragEnd={onCardDragEnd}
-                        renderColumnHeader={({ titulo }) => <span>{titulo}</span>}
-                        renderCard={(data, { removeCard, dragging }) => {
-                            const { servico } = data;
-
-                            return (
-                                <Card
-                                    onClick={(e) => onCardClick(data)}
-                                    dragging={dragging}
-                                    task={data}
-                                >
-                                    <label className='w-full m-1 cursor-pointer bold'>{servico.descricao}</label>
-                                    <label className='w-full m-1 cursor-pointer'>{moment(data.data).format("DD/MM/yyyy")} às {moment(data.hora).format("HH:mm")}</label>
-                                    <div className="d-flex m-1 justify-end">
-                                        {
-                                            data.funcionarios?.map((func) => {
-                                                return (
-                                                    <img title={func.pessoa.razao || func.pessoa.apelido} className="rounded-circle m-1" width="30" src={func.pessoa.foto || "images/contacts/user.jpg"} alt="" />
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </Card>
-                            )
-                        }}
-                    >
-                        {agendamentos}
-                    </Board>
-
-                    {renderOrdemServicoPopUp()}
-                </>
-            )
-        }
-    }
-
-
     return (
         <>
+            <Board
+                // onCardDragEnd={onCardDragEnd}
+                renderColumnHeader={({ titulo }) => <span>{titulo}</span>}
+                renderCard={(localData, { removeCard, dragging }, index) => {
+                    const { servico } = localData;
 
-            <Filter
-                callbackFilter={(dataFilter) => {
-                    getListOrdemServico(dataFilter);
+                    return (
+                        <Card
+                            onClick={(e) => onCardClick(localData)}
+                            dragging={dragging}
+                            task={localData}
+                        >
+                            <div className="d-flex m-1 justify-space-between">
+                                <div>
+                                    <label className='w-full m-1 cursor-pointer bold'>{servico.descricao}</label>
+                                    <label className='w-full m-1 cursor-pointer'>{moment(localData.data).format("DD/MM/yyyy")} às {moment(localData.hora).format("HH:mm")}</label>
+                                </div>
+                                <div>
+
+                                    <DropDownButton
+                                        text=""
+                                        icon="fas fa-trash"
+                                        showArrowIcon={false}
+                                        stylingMode='text'
+                                        dropDownOptions={{width: 100}}
+                                        focusStateEnabled={false}
+                                        items={actionsCard}
+                                        onItemClick={(e) => {
+                                            console.log('e', e);
+                                            if(e.itemData.action)
+                                                e.itemData.action(servico);                                            
+                                            e.event.stopPropagation();
+                                        }}
+                                        onButtonClick={(e) => {
+                                            e.event.stopPropagation();
+                                        }}
+                                        itemRender={(e) => {
+                                            console.log('e', e)
+                                            return (
+                                                <>
+                                                    <div className={`disable-click ${e.class}`}>
+                                                        <i className="fas fa-trash"></i> {e.text}                                                                             
+                                                    </div>                                                    
+                                                </>
+                                            )
+                                        }}
+                                    />
+
+                                </div>
+                            </div>
+                            
+                            <div className="d-flex m-1 justify-end">                                
+                                {
+                                    localData.funcionarios?.map((func) => {
+                                        return (
+                                            <img title={func.pessoa.normalized_name} className="rounded-circle m-1" width="30" src={func.pessoa.foto || "images/contacts/user.jpg"} alt="" />
+                                        )
+                                    })
+                                }
+                            </div>
+                        </Card>
+                    )
                 }}
-            />
+            >
+                {agendamentos}
+            </Board>
 
-            {renderKanban()}
+            
+
+            {renderOrdemServicoPopUp()}
+
         </>
     )
 

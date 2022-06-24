@@ -3,10 +3,7 @@ import Menu from "../Componentes/Menu";
 import ContentRoutes from "../Routes/ContentRoutes";
 import PreLoader from "../Componentes/PreLoader";
 import NavHeader from "../Componentes/NavHeader";
-import ChatBox from "../Componentes/ChatBox";
 import Header from "../Componentes/Header";
-
-
 
 export default class Container extends Component {
 
@@ -19,8 +16,6 @@ export default class Container extends Component {
                 <div id="main-wrapper">
 
                     <NavHeader></NavHeader>
-
-                    <ChatBox></ChatBox>
 
                     <Header></Header>
 
@@ -43,5 +38,3 @@ export default class Container extends Component {
 
     }
 }
-
-  //export default Content;

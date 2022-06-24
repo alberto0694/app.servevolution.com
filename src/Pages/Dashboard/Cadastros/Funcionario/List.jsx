@@ -174,9 +174,7 @@ class FuncionarioList extends Component {
                     />
                     <Column  
                         caption="Nome"
-                        cellRender={(cellData) => {
-                            return cellData.data.pessoa.razao || cellData.data.pessoa.apelido;
-                        }}
+                        dataField={ "pessoa.normalized_name" }
                     />
                     <Column 
                         dataField="pessoa.contatoImediato" 
