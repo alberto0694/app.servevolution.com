@@ -1,5 +1,13 @@
+.dx-row.dx-data-row.dx-column-lines.dx-state-hover {
+    background-color:#d5d5d5;
+}
+
 .dx-button-has-icon .dx-button-content {
     padding: 8px !important;
+}
+
+.dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-active {
+	background-color:#eeeeee;
 }
 
 .ml-1 {

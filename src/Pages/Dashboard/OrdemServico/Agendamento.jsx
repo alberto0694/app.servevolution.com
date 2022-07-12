@@ -29,13 +29,14 @@ function Agendamento() {
     const [showKanban, setShowKanban] = useState(true);
     const [agendamentos, setAgendamentos] = useState([]);
     const [showLoader, setShowLoader] = useState(false);    
+    const [dataFilter, setDataFilter] = useState({});
     const [selectedView, setSelectedView] = useState(['kanban']);
 
     useEffect(() => {
         getListOrdemServico();
     }, [])
 
-    const getListOrdemServico = (dataFilter) => {
+    const getListOrdemServico = (param) => {
 
         setShowLoader(true);
         return new Promise((resolve, reject) => {
@@ -43,7 +44,7 @@ function Agendamento() {
             const usuario = JSON.parse(localStorage.getItem("usuarioCache"));
             const queryParam = usuario.cliente?.length > 0 ? `?cliente_id=${usuario.cliente[0].id}` : '';
 
-            axios.post(`/api/ordem-servicos/list${queryParam}`, dataFilter || {})
+            axios.post(`/api/ordem-servicos/list${queryParam}`, param || dataFilter)
                 .then((response) => {
 
                     setShowLoader(false);
@@ -69,9 +70,10 @@ function Agendamento() {
         if(showLoader) return <Loading />;
 
         if (showKanban) {
-            return <Kanban agendamentos={{ columns: agendamentos.kanban ? agendamentos.kanban : [] }} />
+            const kbList = () => agendamentos.kanban ? agendamentos.kanban : [];
+            return <Kanban agendamentos={{ columns: kbList() }} cbActionList={getListOrdemServico}/>
         } else { 
-            return <Listagem data={agendamentos.list} /> 
+            return <Listagem data={agendamentos.list} cbActionList={getListOrdemServico}/> 
         }
     }
 
@@ -102,8 +104,9 @@ function Agendamento() {
                 </div>
 
                 <Filter
-                    callbackFilter={(dataFilter) => {
-                        getListOrdemServico(dataFilter);
+                    callbackFilter={(cbParam) => {
+                        getListOrdemServico(cbParam);
+                        setDataFilter(cbParam);
                     }}
                 />               
 

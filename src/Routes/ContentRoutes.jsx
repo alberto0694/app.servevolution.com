@@ -25,6 +25,7 @@ import TabelaPrecoList from '../Pages/Dashboard/Cadastros/TabelaPreco/List';
 import PagamentoFuncionario from '../Pages/Dashboard/Financeiro/PagamentoFuncionario';
 import ContasPagar from '../Pages/Dashboard/Financeiro/ContasPagar';
 import ContasReceber from '../Pages/Dashboard/Financeiro/ContasReceber';
+import Titulos from '../Pages/Dashboard/Financeiro/Titulos';
 
 import ServicosPrestados from '../Pages/Dashboard/Relatorios/ServicosPrestados';
 
@@ -66,6 +67,7 @@ class ContentRoutes extends Component {
                     <Route exact path="/financeiro/pagamento-funcionario" element={<PagamentoFuncionario />} />
                     <Route exact path="/financeiro/contas-pagar" element={<ContasPagar />} />
                     <Route exact path="/financeiro/contas-receber" element={<ContasReceber />} />
+                    <Route exact path="/financeiro/titulos" element={<Titulos />} />
 
                     <Route exact path="/relatorios/servicos-prestados" element={<ServicosPrestados />} />
 

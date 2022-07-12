@@ -7,48 +7,12 @@ import { Button } from 'devextreme-react/button';
 import { SelectBox } from 'devextreme-react/select-box';
 import Board from '@asseinfo/react-kanban';
 import { NotificationManager } from 'react-notifications';
-import moment from 'moment';
-import { useNavigate } from "react-router-dom";
 import Card from './Card';
 import Loading from '../../../../Componentes/Loading';
-import DropDownButton from 'devextreme-react/drop-down-button';
-//import history from '../../../../Componentes/History';
-
 import '@asseinfo/react-kanban/dist/styles.css';
 import './Index.css';
 
-
-
-export default function Index({ agendamentos }) {
-
-    const navigate = useNavigate();
-    
-    const actionsCard = [
-        { 
-            text: 'Editar', 
-            icon: 'fas fa-edit', 
-            class: "color-blue",
-            action: (data) => {
-                navigate(`/app/ordem-servico-create/${data.id}`)
-            }
-        },
-        {
-            text: 'Finalizar', 
-            icon: 'fas fa-end', 
-            class: "color-orange",
-            action: (data) => {
-                return;
-            }
-        },
-        { 
-            text: 'Excluir', 
-            icon: 'fas fa-trash', 
-            class: "color-red",
-            action: (data) => {
-                return;
-            }        
-        }
-    ];
+export default function Index({ agendamentos, cbActionList }) {
 
     const [showLoaderOrdemServico, setShowLoaderOrdemServico] = useState(false);
     const [showOrdemServico, setShowOrdemServico] = useState(false);
@@ -80,11 +44,6 @@ export default function Index({ agendamentos }) {
                 setShowLoaderOrdemServico(false);
             });
     }
-
-    // const onCardDragEnd = (board, source, destination) => {
-    //     //const localAgendamentos = moveCard(agendamentos, source, destination);
-    //     //setAgendamentos(localAgendamentos);
-    // }
 
     const renderOrdemServicoPopUp = () => {
 
@@ -224,75 +183,24 @@ export default function Index({ agendamentos }) {
                 // onCardDragEnd={onCardDragEnd}
                 renderColumnHeader={({ titulo }) => <span>{titulo}</span>}
                 renderCard={(localData, { removeCard, dragging }, index) => {
-                    const { servico } = localData;
+                    
 
                     return (
                         <Card
                             onClick={(e) => onCardClick(localData)}
-                            dragging={dragging}
                             task={localData}
-                        >
-                            <div className="d-flex m-1 justify-space-between">
-                                <div>
-                                    <label className='w-full m-1 cursor-pointer bold'>{servico.descricao}</label>
-                                    <label className='w-full m-1 cursor-pointer'>{moment(localData.data).format("DD/MM/yyyy")} às {moment(localData.hora).format("HH:mm")}</label>
-                                </div>
-                                <div>
-
-                                    <DropDownButton
-                                        text=""
-                                        icon="fas fa-trash"
-                                        showArrowIcon={false}
-                                        stylingMode='text'
-                                        dropDownOptions={{width: 100}}
-                                        focusStateEnabled={false}
-                                        items={actionsCard}
-                                        onItemClick={(e) => {
-                                            console.log('e', e);
-                                            if(e.itemData.action)
-                                                e.itemData.action(servico);                                            
-                                            e.event.stopPropagation();
-                                        }}
-                                        onButtonClick={(e) => {
-                                            e.event.stopPropagation();
-                                        }}
-                                        itemRender={(e) => {
-                                            console.log('e', e)
-                                            return (
-                                                <>
-                                                    <div className={`disable-click ${e.class}`}>
-                                                        <i className="fas fa-trash"></i> {e.text}                                                                             
-                                                    </div>                                                    
-                                                </>
-                                            )
-                                        }}
-                                    />
-
-                                </div>
-                            </div>
-                            
-                            <div className="d-flex m-1 justify-end">                                
-                                {
-                                    localData.funcionarios?.map((func) => {
-                                        return (
-                                            <img title={func.pessoa.normalized_name} className="rounded-circle m-1" width="30" src={func.pessoa.foto || "images/contacts/user.jpg"} alt="" />
-                                        )
-                                    })
-                                }
-                            </div>
+                            cbActionList={cbActionList}
+                        >                            
                         </Card>
                     )
                 }}
             >
                 {agendamentos}
             </Board>
-
-            
-
+        
             {renderOrdemServicoPopUp()}
 
         </>
     )
-
 
 }
