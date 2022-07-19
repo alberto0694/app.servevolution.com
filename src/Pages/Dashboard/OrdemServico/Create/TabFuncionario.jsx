@@ -31,8 +31,7 @@ export default function TabFuncionario(props) {
     } = props;
 
     useEffect((e) => {
-
-        console.log('focusedFuncionarios', focusedFuncionarios);
+        
         const c = ordemServico.custos.filter((custo) => {
             return focusedFuncionarios?.map(f => f.id).includes(custo.ordem_servico_funcionario.funcionario_id);
         });
@@ -104,10 +103,6 @@ export default function TabFuncionario(props) {
                         return funcs_sel_ids.indexOf(c.ordem_servico_funcionario.funcionario_id) > -1
                                 && c.tipo_custo_id == data.tipo_custo_id;                        
                     });
-
-
-                    console.log('data', data);
-
                 }
 
             });

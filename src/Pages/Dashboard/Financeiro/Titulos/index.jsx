@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Content from '../../../../Componentes/Content';
 import OrdemServicoGrid from './OrdemServicoGrid';
+import FaturasGrid from './FaturasGrid';
 import Tabs from 'devextreme-react/tabs';
-
-
 
 export default function Index() {
 
@@ -18,7 +17,7 @@ export default function Index() {
         { 
             id: 'titulos', 
             text: 'Títulos',
-            element: <></>
+            element: <FaturasGrid/>
         }
     ];
 
@@ -39,17 +38,7 @@ export default function Index() {
             />
 
             <div className="tab-container">
-
                 {renderTabs()}
-
-                <div className="row">
-                    <div className="form-group col-12">
-                        <div className="d-flex justify-space-between">
-
-                        </div>
-
-                    </div>
-                </div>
             </div>            
             
         </Content>

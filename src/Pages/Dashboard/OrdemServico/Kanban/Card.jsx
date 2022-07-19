@@ -26,30 +26,41 @@ export default function Card({ task, onClick, cbActionList }) {
             icon: 'fas fa-clipboard-list',
             class: "color-orange",
             action: (data) => {
-                swal.fire({
-                    title: 'Finalizar Ordem de Serviço',
-                    text: `Deseja realmente finalizar esta ordem de serviço?`,
-                    icon: 'warning',
-                    confirmButtonText: 'Sim, Finalizar',
-                    confirmButtonColor: '#f89406',
-                    focusCancel: true,           
-                    showCancelButton: true,              
-                    cancelButtonText: 'Não, cancelar',
-                })
-                    .then((response) => {        
-                        if (response.isConfirmed) {
-                            axios.get(`/api/ordem-servicos/finalizar/${data.id}`)
-                                .then((response) => {
-                                    if (response.data.status === false) {
-                                        NotificationManager.error(response.data.message, 'Ordem de Serviço');
-                                    } else {
-                                        NotificationManager.success('Finalizado com sucesso', 'Ordem de Serviço');
-                                        cbActionList();
-                                    }                                   
-                                })
-                                .catch((error) => NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço'));
-                        }    
-                    });
+                
+                axios.get(`api/ordem-servicos/valor-servico-os/${data.id}`)
+                        .then((response) => {
+                            const { unidade_medida } = response.data;
+                            console.log(response.data, unidade_medida);
+                            swal.fire({
+                                title: 'Finalizar Ordem de Serviço',
+                                text: `Informe a quantidade de ${unidade_medida?.descricao || 'trabalho'}(s)`,
+                                icon: 'warning',
+                                confirmButtonText: 'Sim, Finalizar',
+                                confirmButtonColor: '#f89406',
+                                focusCancel: true,           
+                                showCancelButton: true,              
+                                cancelButtonText: 'Não, cancelar',
+                                input: 'number',
+                                inputPlaceholder: `Informe a quantidade de ${unidade_medida?.descricao || 'trabalho'}(s)`,                   
+                                showCancelButton: true,
+                                inputValidator: (value) => { }                    
+                            })
+                                .then((response) => {   
+                                    console.log('response', response);
+                                    if (response.isConfirmed) {
+                                        axios.post(`/api/ordem-servicos/finalizar/${data.id}`, { quantidade_trabalho: response.value })
+                                            .then((response) => {
+                                                if (response.data.status === false) {
+                                                    NotificationManager.error(response.data.message, 'Ordem de Serviço');
+                                                } else {
+                                                    NotificationManager.success('Finalizado com sucesso', 'Ordem de Serviço');
+                                                    cbActionList();
+                                                }                                   
+                                            })
+                                            .catch((error) => NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço'));
+                                    }    
+                                });
+                        });                
             }
         },
         { 

@@ -177,7 +177,6 @@ export default function FuncionarioCreate() {
                                 value={selectedServicos}
                                 selectedItems={selectedServicos}
                                 onValueChanged={(item) => {
-                                    console.log('passei aqui');
                                     setSelectedServicos(item.value);
                                 }}
                             />

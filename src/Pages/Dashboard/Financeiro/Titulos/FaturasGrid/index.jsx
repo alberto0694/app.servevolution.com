@@ -19,24 +19,25 @@ import Loading from '../../../../../Componentes/Loading';
 export default function Index() {
 
     const swal = withReactContent(Swal);
-    const [ordemServico, setOrdemServico] = useState([]);
+    const [titulos, setTitulos] = useState([]);
     const [showLoader, setShowLoader] = useState(false);
     const dataGridRef = useRef();
 
     useEffect(() => {
-        getListOrdemServico();
+        getListTitulos();
     }, []);
 
-    const getListOrdemServico = () => {
+    const getListTitulos = () => {
 
         setShowLoader(true);
         return new Promise((resolve, reject) => {
 
-            axios.post(`/api/titulo/ordem-servicos`)
+            axios.post(`/api/titulo/list`)
                 .then((response) => {
 
                     setShowLoader(false);
-                    setOrdemServico(response.data);
+                    setTitulos(response.data);
+                    resolve(response.data);
 
                 })
                 .catch((error) => {
@@ -47,78 +48,13 @@ export default function Index() {
 
     };
 
-    const selecionarParcelas = () => {
-
-        return new Promise((resolve) => {
-            swal.fire({
-                title: 'Selecione a quantidade de parcelas',
-                input: 'select',
-                inputOptions: {
-                    1: '1 (à vista)',
-                    2: '2 vezes',
-                    3: '3 vezes',
-                    4: '4 vezes',
-                    5: '5 vezes',
-                    6: '6 vezes',
-                    7: '7 vezes'
-                },
-                showCancelButton: true,
-                inputValidator: (value) => {
-
-                    resolve({quantidade_parcelas : value});
-
-                }
-            });
-        });
-
-    }
-
-    const gerarTitulo = () => {
-
-        const selectedData = dataGridRef.current.instance.getSelectedRowsData();
-        if (selectedData.length == 0) {
-            NotificationManager.warning('Selecione ao menos uma ordem de serviço.', 'Título Financeiro');
-            return;
-        }
-
-        selecionarParcelas().then(({ quantidade_parcelas }) => {
-            const parcelas_txt = quantidade_parcelas == 1 ? 'à vista' : `em ${quantidade_parcelas} vezes`;
-            swal.fire({
-                title: 'Gerar Tìtulo Financeiro',
-                text: `Deseja realmente gerar esse título financeiro ${parcelas_txt}?`,
-                icon: 'question',
-                confirmButtonText: 'Sim, gerar',
-                showCancelButton: true,
-                cancelButtonText: 'Não, cancelar',
-            })
-            .then((response) => {
-
-                if (response.isConfirmed) {
-                    setShowLoader(true);
-                    axios.post(`/api/titulo/ordem-servicos/gerar`, selectedData)
-                        .then((response) => {
-
-                            getListOrdemServico();
-                            NotificationManager.success('Título gerado com sucesso.', 'Título Financeiro');
-
-                        })
-                        .catch((error) => {
-                            setShowLoader(false);
-                            NotificationManager.error(JSON.stringify(error), 'Título Financeiro');
-                        });
-                }
-
-            });
-        });
-    }
-
     if(showLoader){
         return <Loading/>
     }
 
     return (
         <>
-            <div className="d-flex justify-start">
+            {/* <div className="d-flex justify-start">
                 <Button
                     text="Gerar titulo"
                     type="normal"
@@ -126,11 +62,11 @@ export default function Index() {
                     stylingMode="contained"
                     onClick={gerarTitulo}
                 />
-            </div>        
+            </div>         */}
 
 
             <DataGrid
-                dataSource={ordemServico}
+                dataSource={titulos}
                 allowColumnReordering={true}
                 rowAlternationEnabled={true}
                 showBorders={true}
@@ -147,27 +83,30 @@ export default function Index() {
                 />
                 <Column
                     dataType="string"
-                    caption="Cliente"
-                    dataField='cliente.pessoa.normalized_name'
+                    caption="Número"
+                    dataField='id'
                 />
                 <Column
                     dataType="string"
-                    caption="Serviço"
-                    dataField="servico.descricao"
+                    caption="Valor Nominal"
+                    dataField='valor_nominal'
+                    format='currency'
+                    precision={3}
                 />
                 <Column
-                    dataType="date"
-                    caption="Dia"
-                    width={110}
-                    format="dd/MM/yyyy"
-                    dataField="data"
+                    dataType="string"
+                    caption="Valor Atualizado"
+                    dataField='valor_atualizado'
                 />
                 <Column
-                    dataType="datetime"
-                    caption="Hora"
-                    width={80}
-                    format="HH:mm"
-                    dataField="hora"
+                    dataType="string"
+                    caption="Valor Baixado"
+                    dataField='valor_baixado'
+                />
+                <Column
+                    dataType="string"
+                    caption="Saldo"
+                    dataField='saldo'
                 />
                 <Column
                     alignment="center"

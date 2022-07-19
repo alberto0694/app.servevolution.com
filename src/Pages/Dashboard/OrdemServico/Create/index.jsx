@@ -70,7 +70,7 @@ export default function OrdemServicoCreate() {
                     setShowLoader(false);
                 })
                 .catch((error) => {
-                    console.log('error', error);
+                    NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
                 });
         } else {
             setShowLoader(false);
@@ -83,7 +83,7 @@ export default function OrdemServicoCreate() {
                 setClientes(response.data);
             })
             .catch((error) => {
-                console.log('error', error);
+                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
             });
     };
 
@@ -175,7 +175,6 @@ export default function OrdemServicoCreate() {
                         }}
                         cbSetCustos={(data) => {
                             ordemServico.custos = data;
-                            console.log('edtCusto 2', data);
                             setOrdemServico({ ...ordemServico })
                         }}
                     />

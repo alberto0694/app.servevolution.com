@@ -87,8 +87,7 @@ class FuncionarioList extends Component {
                     this.setState({ funcionarios: response.data, showLoader: false });
                 }                
             })
-            .catch((error) => {
-                console.log('func', error);
+            .catch((error) => {            
                 NotificationManager.error(JSON.stringify(error), 'Funcionário');
             });
     }
