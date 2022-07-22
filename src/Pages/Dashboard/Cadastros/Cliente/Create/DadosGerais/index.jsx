@@ -48,9 +48,9 @@ export default function ClienteCreate({cliente, setCliente}) {
                             <input type="file" id="imageUpload" accept=".png, .jpg, .jpeg" onChange={(e) => onFileChange(e)} />
                             <label htmlFor="imageUpload"></label>
                         </div>
-                        
+
                         <div className="avatar-preview">
-                            <div id="imagePreview" style={{ backgroundImage: cliente.pessoa?.foto ? `url(${cliente.pessoa?.foto})` : "url('images/contacts/user.jpg')" }}>
+                            {/* <div id="imagePreview" style={{ backgroundImage: cliente.pessoa?.foto ? `url(${cliente.pessoa?.foto})` : "url('images/contacts/user.jpg')" }}> */}
                             </div>
                         </div>
                     </div>
