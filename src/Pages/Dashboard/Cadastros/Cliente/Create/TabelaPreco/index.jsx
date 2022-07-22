@@ -6,6 +6,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { NotificationManager } from 'react-notifications';
 import { Button } from 'devextreme-react/button';
 import TextBox from 'devextreme-react/text-box';
+import NumberBox from 'devextreme-react/number-box';
 import TextArea from 'devextreme-react/text-area';
 import DataGrid, {
 	Column,
@@ -110,10 +111,10 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 
 										<div className="form-group col-3">
 											<label>Valor</label>
-											<TextBox
+											<NumberBox
 												className="form-control"
-												value={valorServico.valor}
-												mode="number"
+												format="R$ 0#.###.##,##"
+												value={valorServico.valor}												
 												onValueChanged={(data) => {
 													setValorServico({ ...valorServico, valor: data.value });
 												}}
@@ -228,6 +229,14 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 						caption="Valor"
 						dataField="valor"
 						dataType="number"
+						format={{ 
+							style: 'currency', 
+							precision: 2, 
+							currency: 'BRL'
+						}}
+						customizeText={(data) => {
+							return data.valueText.replace("$", "$ ");
+						}}
 					/>
 
 					<Column

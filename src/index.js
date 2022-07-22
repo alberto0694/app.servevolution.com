@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import './index.css';
 
-axios.defaults.baseURL = 'http://localhost:8000';
-//axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
+//axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use((config) => {
