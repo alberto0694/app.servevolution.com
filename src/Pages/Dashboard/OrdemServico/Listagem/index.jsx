@@ -8,6 +8,7 @@ import DataGrid, {
     Pager,
     Paging,
     SearchPanel,
+    FilterRow
 } from 'devextreme-react/data-grid';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -61,6 +62,7 @@ export default function Listagem({ data }) {
                 <GroupPanel visible={true} />
                 <SearchPanel visible={true} highlightCaseSensitive={true} />
                 <Grouping autoExpandAll={false} />
+                <FilterRow visible={true} applyFilter='auto' />
 
                 <Column
                     dataType="string"

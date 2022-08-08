@@ -20,7 +20,6 @@ import NotFound from '../Pages/NotFound';
 
 import Agendamento from '../Pages/Dashboard/OrdemServico/Agendamento';
 import OrdemServicoCreate from '../Pages/Dashboard/OrdemServico/Create';
-import TabelaPrecoList from '../Pages/Dashboard/Cadastros/TabelaPreco/List';
 
 import PagamentoFuncionario from '../Pages/Dashboard/Financeiro/PagamentoFuncionario';
 import ContasPagar from '../Pages/Dashboard/Financeiro/ContasPagar';
@@ -57,12 +56,9 @@ class ContentRoutes extends Component {
                     <Route exact path="/unidade-medida-create" element={<UnidadeMedidaCreate />} />
                     <Route exact path="/unidade-medida-create/:unidade_medida_id" element={<UnidadeMedidaCreate />} />
 
-
                     <Route exact path="/clientes" element={<ClienteList />} />
                     <Route exact path="/cliente-create" element={<ClienteCreate />} />
                     <Route exact path="/cliente-create/:cliente_id" element={<ClienteCreate />} />
-
-                    <Route exact path="/tabelas-preco" element={<TabelaPrecoList />} />
 
                     <Route exact path="/financeiro/pagamento-funcionario" element={<PagamentoFuncionario />} />
                     <Route exact path="/financeiro/contas-pagar" element={<ContasPagar />} />
@@ -74,7 +70,6 @@ class ContentRoutes extends Component {
                     <Route exact path="/ordem-servicos/agendamentos" element={<Agendamento />} />
                     <Route exact path="/ordem-servico-create" element={<OrdemServicoCreate />} />
                     <Route exact path="/ordem-servico-create/:ordem_servico_id" element={<OrdemServicoCreate />} />
-
 
                     <Route exact path="/cliente/agendamentos" element={<Agendamento />} />
                                     

@@ -22,38 +22,38 @@ import { SelectBox } from 'devextreme-react/select-box';
 import Loading from '../../../../../../Componentes/Loading';
 import ValorServico from '../../../../../../Models/ValorServico';
 
-
-
 export default function Index({ cliente, setCliente, tipoServicos, unidadesMedidas }) {
 
 	let swal = withReactContent(Swal);
 	const [showModalServico, setShowModalServico] = useState(false);
 	const [showLoader, setShowLoader] = useState(false);
 	const [valorServico, setValorServico] = useState(null);
+	const [openingValorServico, setOpeningValorServico] = useState(false);
 
 	useEffect(() => {
 
-		console.log('valorServico', valorServico);
 		if(!valorServico) return;
 
 		if(!valorServico?.cliente_id){
 			NotificationManager.warning('Salve primeiro este cliente para poder adicionar um valor de serviço.', 'Tabela de Preço');
 			return;
-		}		
+		}		                                                                                                                                                                  
+
 		setShowModalServico(true);
 
 	}, [valorServico]);
 
 	const adicionarValorServico = () => {
+		setOpeningValorServico(true);
 		setValorServico({ ...new ValorServico(), cliente_id: cliente.id });
 	}
 
-	const editarValorServico = (data) => {
+	const editarValorServico = (data) => {	
+		setOpeningValorServico(true);
 		setValorServico({ ...data });	
 	}
 
-	const salvarValorServico = () => {
-		
+	const salvarValorServico = (data) => {		
 		setShowLoader(true);
 		axios.post('api/clientes/valor-servico/createOrUpdate', valorServico)
 			.then((response) => {
@@ -65,6 +65,34 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 			.catch((error) => {
 				setShowLoader(false);
 				NotificationManager.error(JSON.stringify(error), 'Tabela de Preço');
+			});
+	}
+
+	const excluirValorServico = (data) => {
+		swal.fire({
+			title: 'Exclusão de Serviço',
+			text: 'Deseja realmente excluir este serviço?',
+			icon: 'question',
+			confirmButtonText: 'Sim',
+			showCancelButton: true,
+			cancelButtonText: 'Não, cancelar',
+		})
+			.then((response) => {
+
+				if (response.isConfirmed) {
+					setShowLoader(true);
+					axios.get(`api/clientes/valor-servico/delete/${data.id}`)
+						.then((response) => {
+							setCliente({...cliente, valores_servicos: response.data });
+							setShowLoader(false);
+							NotificationManager.success('Serviço excluído com sucesso!', 'Serviços');
+						})
+						.catch((error) => {
+							setShowLoader(false);
+							NotificationManager.error(JSON.stringify(error), 'Serviços');
+						});
+
+				}
 			});
 	}
 
@@ -83,6 +111,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 					onHiding={() => {
 						setShowModalServico(false)
 					}}
+					onShown={() => setOpeningValorServico(false)}
 					contentRender={() => {
 
 						return (
@@ -104,6 +133,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 												valueExpr='id'
 												value={valorServico.tipo_servico_id}
 												onValueChanged={(data) => {
+													if(openingValorServico) return;
 													setValorServico({ ...valorServico, tipo_servico_id: data.value });
 												}}
 											/>
@@ -113,9 +143,13 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 											<label>Valor</label>
 											<NumberBox
 												className="form-control"
-												format="R$ 0#.###.##,##"
+												format={{
+													type:"currency",
+													precision: 2
+												}}
 												value={valorServico.valor}												
 												onValueChanged={(data) => {
+													if(openingValorServico) return;
 													setValorServico({ ...valorServico, valor: data.value });
 												}}
 											/>
@@ -135,6 +169,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 												valueExpr='id'
 												value={valorServico.unidade_medida_id}
 												onValueChanged={(data) => {
+													if(openingValorServico) return;
 													setValorServico({ ...valorServico, unidade_medida_id: data.value });
 												}}
 											/>
@@ -170,25 +205,6 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 
 			</>
 		)
-	}
-
-	const renderPage = () => {
-		swal.fire({
-			title: 'Exclusão de Cliente',
-			text: 'Deseja realmente excluir este registro?',
-			icon: 'question',
-			confirmButtonText: 'Sim',
-			showCancelButton: true,
-			cancelButtonText: 'Não, cancelar',
-		})
-			.then((response) => {
-
-				if (response.isConfirmed) {
-
-
-				}
-
-			});
 	}
 
 	if(showLoader){
@@ -234,9 +250,6 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 							precision: 2, 
 							currency: 'BRL'
 						}}
-						customizeText={(data) => {
-							return data.valueText.replace("$", "$ ");
-						}}
 					/>
 
 					<Column
@@ -263,7 +276,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 											className='ml-1'
 											type="normal"
 											icon='fas fa-trash'
-											onClick={(e) => 0}
+											onClick={(e) => excluirValorServico(data)}
 										/>
 									</div>
 								</>

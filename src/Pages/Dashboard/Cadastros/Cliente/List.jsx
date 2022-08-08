@@ -12,6 +12,7 @@ import DataGrid, {
 	Pager,
 	Paging,
 	SearchPanel,
+	FilterRow
 } from 'devextreme-react/data-grid';
 
 import Content from '../../../../Componentes/Content';
@@ -94,6 +95,7 @@ export default function Cliente() {
 					<GroupPanel visible={true} />
 					<SearchPanel visible={true} highlightCaseSensitive={true} />
 					<Grouping autoExpandAll={false} />
+					<FilterRow visible={true} applyFilter='auto' />
 
 					<Column
 						dataField={"pessoa.foto"}

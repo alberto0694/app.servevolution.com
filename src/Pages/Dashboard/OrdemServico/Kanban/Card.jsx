@@ -30,7 +30,6 @@ export default function Card({ task, onClick, cbActionList }) {
                 axios.get(`api/ordem-servicos/valor-servico-os/${data.id}`)
                         .then((response) => {
                             const { unidade_medida } = response.data;
-                            console.log(response.data, unidade_medida);
                             swal.fire({
                                 title: 'Finalizar Ordem de Serviço',
                                 text: `Informe a quantidade de ${unidade_medida?.descricao || 'trabalho'}(s)`,
@@ -45,8 +44,7 @@ export default function Card({ task, onClick, cbActionList }) {
                                 showCancelButton: true,
                                 inputValidator: (value) => { }                    
                             })
-                                .then((response) => {   
-                                    console.log('response', response);
+                                .then((response) => {
                                     if (response.isConfirmed) {
                                         axios.post(`/api/ordem-servicos/finalizar/${data.id}`, { quantidade_trabalho: response.value })
                                             .then((response) => {
@@ -107,7 +105,7 @@ export default function Card({ task, onClick, cbActionList }) {
                         <div className="d-flex m-1 justify-space-between">
                             <div>
                                 <label className='w-full m-1 cursor-pointer bold'>{task.id} - {servico.descricao}</label>
-                                <label className='w-full m-1 cursor-pointer'>{moment(task.data).format("DD/MM/yyyy")} às {moment(`${task.data} ${task.hora}`).format("HH:mm")}</label>
+                                <label className='w-full m-1 cursor-pointer'>{moment(task.data).format("DD/MM/yyyy")} às {moment(`${task.data} ${task.hora_inicial}`).format("HH:mm")}</label>
                             </div>
                             <div>
                                 <DropDownButton

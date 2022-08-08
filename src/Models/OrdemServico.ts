@@ -8,7 +8,8 @@ export default class OrdemServico{
     titulo: string = "";
     descricao: string = "";
     data: Date;
-    hora: Date;
+    hora_inicial: Date;
+    hora_final: Date;
     cliente: Cliente = null;
     tipoServico: TipoServico = null;
     cliente_id: number;

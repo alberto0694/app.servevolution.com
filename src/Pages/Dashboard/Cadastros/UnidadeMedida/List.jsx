@@ -12,6 +12,7 @@ import DataGrid, {
 	Pager,
 	Paging,
 	SearchPanel,
+	FilterRow
 } from 'devextreme-react/data-grid';
 
 import Content from '../../../../Componentes/Content';
@@ -88,7 +89,8 @@ export default function UnidadeMedidaList() {
 					<GroupPanel visible={true} />
 					<SearchPanel visible={true} highlightCaseSensitive={true} />
 					<Grouping autoExpandAll={false} />
-
+					<FilterRow visible={true} applyFilter='auto' />
+					
 					<Column
 						dataField="descricao"
 						dataType="string"

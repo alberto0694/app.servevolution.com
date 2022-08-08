@@ -57,6 +57,7 @@ export default function OrdemServicoCreate() {
     };
 
     const handleChange = function (value, attr) {
+        console.log('value', value);
         ordemServico[attr] = value;
         setOrdemServico({ ...ordemServico });
     };

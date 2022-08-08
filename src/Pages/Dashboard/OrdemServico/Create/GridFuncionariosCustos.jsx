@@ -61,6 +61,7 @@ export default function GridFuncionariosCustos(props) {
                     caption="Ações"
                     alignment="center"
                     width={80}
+                    visible={Boolean(onRemoveCusto)}
                     cellRender={(data) => {
                         return (
                             <>

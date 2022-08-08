@@ -2,6 +2,8 @@ import React from 'react';
 import DateBox from 'devextreme-react/date-box';
 import { TextArea } from 'devextreme-react/text-area';
 import { SelectBox } from 'devextreme-react/select-box';
+import { useState, useEffect } from 'react';
+import moment from 'moment';
 
 export default function TabDadosGerais(props) {
 
@@ -11,6 +13,29 @@ export default function TabDadosGerais(props) {
         tipoServicos,
         cbHandleChange
     } = props;
+
+    const [horaInicial, setHoraInicial] = useState(null);
+    const [horaFinal, setHoraFinal] = useState(null);
+
+    useEffect(() => {
+
+        if(!ordemServico.id) return; 
+
+        const horaInicialArr = ordemServico.hora_inicial ? ordemServico.hora_inicial.split(":") : [];
+        const horaFinalArr = ordemServico.hora_final ? ordemServico.hora_final.split(":") : [];
+
+        if (horaInicialArr.length > 0) {
+            const horaInicial = moment().set({ hour: horaInicialArr[0], minute: horaInicialArr[1], second: horaInicialArr[2], millisecond: 0 });
+            setHoraInicial(horaInicial);
+        }
+
+        if (horaFinalArr.length > 0) {
+            const horaFinal = moment().set({ hour: horaFinalArr[0], minute: horaFinalArr[1], second: horaFinalArr[2], millisecond: 0 });
+            setHoraFinal(horaFinal);
+        }
+
+    }, []);
+
 
     return (
         <>
@@ -26,14 +51,31 @@ export default function TabDadosGerais(props) {
                     />
                 </div>
                 <div className="form-group col-2">
-                    <label>Hora</label>
+                    <label>Hora Inicial</label>
                     <DateBox
                         type="time"
-                        defaultValue={new Date()}
-                        value={ordemServico.hora}
+                        useMaskBehavior={true}
+                        value={horaInicial}
                         showClearButton={true}
                         displayFormat="HH:mm"
-                        onValueChange={(value) => cbHandleChange(value, 'hora')}
+                        onValueChange={(value) => {
+                            setHoraInicial(value);
+                            cbHandleChange(moment(value).format('HH:mm:ss'), 'hora_inicial')
+                        }}
+                    />
+                </div>
+
+                <div className="form-group col-2">
+                    <label>Hora Final</label>
+                    <DateBox
+                        type="time"
+                        value={horaFinal}
+                        showClearButton={true}
+                        displayFormat="HH:mm"
+                        onValueChange={(value) => {
+                            setHoraFinal(value);
+                            cbHandleChange(moment(value).format('HH:mm:ss'), 'hora_final')
+                        }}
                     />
                 </div>
 

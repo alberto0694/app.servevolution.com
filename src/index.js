@@ -2,11 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import axios from 'axios';
+import ptMessages from "devextreme/localization/messages/pt.json";
+import { locale, loadMessages } from "devextreme/localization";
+import config from "devextreme/core/config";
 
 import './index.css';
 
-//axios.defaults.baseURL = 'http://localhost:8000';
-axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
+axios.defaults.baseURL = 'http://localhost:8000';
+//axios.defaults.baseURL = 'https://api-servevolution-com.herokuapp.com';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.interceptors.request.use((config) => {
@@ -23,15 +26,24 @@ axios.interceptors.request.use((config) => {
 
 axios.interceptors.response.use((response) => {
 
-    console.log('response axios', response);
     return response;
 
 }, (error) => {
     
-    localStorage.removeItem("usuarioCache");
-    window.location.pathname = '/';
+    // localStorage.removeItem("usuarioCache");
+    // window.location.pathname = '/';
     return error;
 });
+
+config({
+    defaultCurrency: 'BRL',
+    serverDecimalSeparator: '.',
+    thousandsSeparator: '.',
+    decimalSeparator: ','
+});
+
+loadMessages(ptMessages);
+locale(navigator.language);
 
 const app = ( 
 

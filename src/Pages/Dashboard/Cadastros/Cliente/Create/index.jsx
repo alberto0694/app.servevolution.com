@@ -5,6 +5,7 @@ import Content from '../../../../../Componentes/Content';
 import { Navigate, useParams } from 'react-router-dom';
 import DadosGerais from './DadosGerais';
 import TabelaPreco from './TabelaPreco';
+import TabelaFuncionario from './TabelaFuncionario';
 import Tabs from 'devextreme-react/tabs';
 import { NotificationManager } from 'react-notifications';
 import ClienteModel from '../../../../../Models/Cliente.ts';
@@ -35,6 +36,16 @@ export default function Index() {
             id: 'tabela_preco', 
             text: 'Tabela de Preços',
             element: <TabelaPreco 
+                        unidadesMedidas={unidadesMedidas}
+                        tipoServicos={tipoServicos}
+                        cliente={cliente}
+                        setCliente={(data) => setCliente({...data})}
+                    />
+        },
+        { 
+            id: 'valores_funcionarios', 
+            text: 'Funcionários',
+            element: <TabelaFuncionario 
                         unidadesMedidas={unidadesMedidas}
                         tipoServicos={tipoServicos}
                         cliente={cliente}

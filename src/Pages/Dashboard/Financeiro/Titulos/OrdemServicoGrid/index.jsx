@@ -8,7 +8,8 @@ import DataGrid, {
     Pager,
     Paging,
     SearchPanel,
-    Selection
+    Selection,
+    FilterRow
 } from 'devextreme-react/data-grid';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -95,7 +96,7 @@ export default function Index() {
 
                 if (response.isConfirmed) {
                     setShowLoader(true);
-                    axios.post(`/api/titulo/ordem-servicos/gerar`, selectedData)
+                    axios.post(`/api/titulo/ordem-servicos/gerar`, { quantidade_parcelas, data: selectedData })
                         .then((response) => {
 
                             getListOrdemServico();
@@ -128,7 +129,6 @@ export default function Index() {
                 />
             </div>        
 
-
             <DataGrid
                 dataSource={ordemServico}
                 allowColumnReordering={true}
@@ -140,11 +140,19 @@ export default function Index() {
                 <GroupPanel visible={true} />
                 <SearchPanel visible={true} highlightCaseSensitive={true} />
                 <Grouping autoExpandAll={false} />
+                <FilterRow visible={true} applyFilter='auto' />
+
                 <Selection
                     mode="multiple"
                     selectAllMode='allPages'
                     showCheckBoxesMode='always'
                 />
+                <Column
+                    dataType="string"
+                    caption="Número"
+                    dataField="id"
+                    width={110}
+                />                
                 <Column
                     dataType="string"
                     caption="Cliente"
@@ -154,7 +162,7 @@ export default function Index() {
                     dataType="string"
                     caption="Serviço"
                     dataField="servico.descricao"
-                />
+                />              
                 <Column
                     dataType="date"
                     caption="Dia"
@@ -166,9 +174,19 @@ export default function Index() {
                     dataType="datetime"
                     caption="Hora"
                     width={80}
-                    format="HH:mm"
+                    format="hh:mm"
                     dataField="hora"
                 />
+                <Column
+                    dataType="number"
+                    caption="Valor"
+                    dataField='valor'
+                    format={{ 
+                        style: 'currency', 
+                        precision: 2, 
+                        currency: 'BRL'
+                    }}
+                />                  
                 <Column
                     alignment="center"
                     caption="Ações"

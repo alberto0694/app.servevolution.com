@@ -121,7 +121,7 @@ export default function Index({ agendamentos, cbActionList }) {
                                                 disabled={true}
                                                 type="time"
                                                 defaultValue={new Date()}
-                                                value={ordemServico.hora}
+                                                value={ordemServico.hora_inicial}
                                                 displayFormat="HH:mm"
                                             />
                                         </div>
