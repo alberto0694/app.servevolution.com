@@ -4,6 +4,9 @@ import { Routes, Route } from 'react-router-dom';
 import FuncionarioList from '../Pages/Dashboard/Cadastros/Funcionario/List';
 import FuncionarioCreate from '../Pages/Dashboard/Cadastros/Funcionario/Create';
 
+import ColaboradorList from '../Pages/Dashboard/Cadastros/Colaborador/List';
+import ColaboradorCreate from '../Pages/Dashboard/Cadastros/Colaborador/Create';
+
 import TipoServicoList from '../Pages/Dashboard/Cadastros/TipoServico/List';
 import TipoServicoCreate from '../Pages/Dashboard/Cadastros/TipoServico/Create';
 
@@ -43,6 +46,10 @@ class ContentRoutes extends Component {
                     <Route exact path="/funcionarios" element={<FuncionarioList />} />
                     <Route exact path="/funcionario-create" element={<FuncionarioCreate />} />
                     <Route exact path="/funcionario-create/:funcionario_id" element={<FuncionarioCreate />} />
+
+                    <Route exact path="/colaboradores" element={<ColaboradorList />} />
+                    <Route exact path="/colaborador-create" element={<ColaboradorCreate />} />
+                    <Route exact path="/colaborador-create/:colaborador_id" element={<ColaboradorCreate />} />
 
                     <Route exact path="/tipo-servicos" element={<TipoServicoList />} />
                     <Route exact path="/tipo-servicos-create" element={<TipoServicoCreate />} />

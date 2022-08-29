@@ -1,13 +1,12 @@
 import React from 'react';
 import { DataGrid, Column } from 'devextreme-react/data-grid';
 
-export default function ParcelasGrid({ titulo }) {
+export default function ParcelasGrid({ parcelas }) {
 
-    console.log('titulo', titulo);
     return (       
         <>
             <DataGrid
-                dataSource={titulo.parcelas}
+                dataSource={parcelas}
                 showBorders={true}
                 columnAutoWidth={true}
             >

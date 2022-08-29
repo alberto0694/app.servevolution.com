@@ -90,19 +90,26 @@ export default function Index() {
 
     return (
         <>
-
             <DataGrid
                 dataSource={titulos}
                 allowColumnReordering={true}
                 rowAlternationEnabled={true}
                 showBorders={true}
                 hoverStateEnabled={true}
-                ref={dataGridRef}
+                ref={dataGridRef}                
             >
                 <GroupPanel visible={true} />
                 <SearchPanel visible={true} highlightCaseSensitive={true} />
                 <Grouping autoExpandAll={false} />
                 <FilterRow visible={true} applyFilter='auto' />
+
+                <MasterDetail
+                    enabled={true}
+                    component={(param) => {
+                        const { data } = param.data;
+                        return <ParcelaOrdemServicoTabs titulo={data}/>
+                    }}                
+                />
 
                 <Column
                     dataType="string"
@@ -159,30 +166,23 @@ export default function Index() {
                         return (
                             <>
                                 <div className="d-flex justify-center">
-                                        <Button
-                                            text=""
-                                            type="normal"
-                                            icon='fas fa-trash'
-                                            stylingMode="contained"
-                                            onClick={(e) => excluirTitulo(data)}
-                                        />
+                                    <Button
+                                        text=""
+                                        type="normal"
+                                        icon='fas fa-trash'
+                                        stylingMode="contained"
+                                        onClick={(e) => excluirTitulo(data)}
+                                    />
                                 </div>
                             </>
                         )
                     }}
                 />
-{/* 
+
                 <Pager allowedPageSizes={[10, 25, 50, 100]} showPageSizeSelector={true} />
-                <Paging defaultPageSize={10} /> */}
+                <Paging defaultPageSize={10} />
 
-                <MasterDetail
-                    enabled={true}
-                    component={(param) => {
 
-                        const { data } = param.data;
-                        return <ParcelaOrdemServicoTabs titulo={data}/>
-                    }}
-                />
 
             </DataGrid>
         </>

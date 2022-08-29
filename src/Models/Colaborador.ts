@@ -1,6 +1,6 @@
 import Pessoa from "./Pessoa";
 
-export default class Funcionario {
+export default class Colaborador {
 
     pessoa:Pessoa = null; 
     cpf: string;
@@ -8,6 +8,7 @@ export default class Funcionario {
     orgao_emissor: string;
     uf_emissor: string;
     sexo: string;
+    senha: string;
     data_admissao: Date;
     data_demissao: Date;      
 

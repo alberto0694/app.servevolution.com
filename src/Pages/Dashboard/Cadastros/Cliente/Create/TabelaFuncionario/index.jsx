@@ -33,6 +33,24 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
     const [funcionarios, setFuncionarios] = useState([]);
     const [selectedFuncionarios, setSelectedFuncionarios] = useState([]);
     const [focusedFuncionarios, setFocusedFuncionarios] = useState([]);
+    const [editFuncionario, setEditFuncionario] = useState(false);
+
+    useEffect(() => {
+        const funcs = cliente.valores_funcionarios.map((vf) => vf.funcionario);
+        let arr_ids = [];
+        const funcs_normalized = funcs.filter((f) => {
+            if(!arr_ids.includes(f.id)){
+                arr_ids.push(f.id);
+                return true;
+            }
+
+            return false;
+        })
+
+        setFuncionarios(funcs_normalized);
+
+    }, []);
+
 
     useEffect(() => {
         
@@ -48,7 +66,8 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
     }, [valorFuncionario]);
 
     const getFuncionarios = (tipo_servico_id) => {
-        axios.get(`api/funcionario/list?tipo_servico_id=${tipo_servico_id}`)
+        const query_param = tipo_servico_id ? `?tipo_servico_id=${tipo_servico_id}` : '';
+        axios.get(`api/funcionario/list${query_param}`)
             .then((response) => {
                 if (response.data.status === false) {
                     NotificationManager.error(response.data.message, 'Funcionário');
@@ -64,6 +83,8 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
     const adicionarValorFuncionario = () => {
         setOpeningValorFuncionario(true);
         setValorFuncionario({ ...new ValorFuncionario(), cliente_id: cliente.id });
+        setFocusedFuncionarios([]);
+        setSelectedFuncionarios([]);
     }
     
     const adicionarFuncionario = () => {
@@ -74,14 +95,26 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
         setSelectedFuncionarios([]);
     }
 
-    const editarValorFuncionario = (data) => {
+    const editarValorFuncionario = (data) => {     
         setOpeningValorFuncionario(true);
         setValorFuncionario({ ...data });
+
+        const funcs = funcionarios.filter((f) => f.id == data.funcionario_id);
+        setFocusedFuncionarios(funcs);
+        setEditFuncionario(true);
     }
 
     const salvarValorFuncionario = (data) => {
         setShowLoader(true);
-        axios.post('api/clientes/valor-funcionario/createOrUpdate', valorFuncionario)
+
+        const valoresFuncionarios = focusedFuncionarios.map(({ id }) => {
+            return {
+                ...valorFuncionario,
+                funcionario_id: id
+            }
+        });
+
+        axios.post(`api/clientes/valor-funcionario/createOrUpdate?cliente_id=${cliente.id}`, valoresFuncionarios)
             .then((response) => {
                 setShowModalFuncionario(false);
                 setShowLoader(false);
@@ -107,7 +140,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 
                 if (response.isConfirmed) {
                     setShowLoader(true);
-                    axios.get(`api/clientes/valor-funcionario/delete/${data.id}`)
+                    axios.post(`api/clientes/valor-funcionario/delete?cliente_id=${data.cliente_id}`, [data.id])
                         .then((response) => {
                             setCliente({ ...cliente, valores_funcionarios: response.data });
                             setShowLoader(false);
@@ -212,9 +245,10 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
                                                 <label>Escolha um funcionário para adicionar</label>
 
                                                 <div className="row">
-                                                    <div className="col-10">
+                                                    <div className="col-11">
 
                                                         <TagBox
+                                                            disabled={editFuncionario}
                                                             items={funcionarios}
                                                             showSelectionControls={true}
                                                             applyValueMode="useButtons"
@@ -230,13 +264,14 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
                                                         />
                                                     </div>
 
-                                                    <div className="col-2 p-0">
+                                                    <div className="col-1 p-0">
                                                         <button
+                                                            disabled={editFuncionario}
                                                             type="button"
                                                             className="btn btn-primary btn-sm p-2"
                                                             onClick={adicionarFuncionario}
                                                         >
-                                                            <i className="fas fa-plus"></i> Adicionar
+                                                            <i className="fas fa-plus"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -244,6 +279,7 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
 
                                             <div className="form-group border-list">
                                                 <List
+                                                    disabled={editFuncionario}
                                                     dataSource={focusedFuncionarios}
                                                     selectionMode="all"
                                                     className="m-0"
@@ -269,7 +305,10 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
                                                     type="normal"
                                                     icon='fas fa-arrow-left'
                                                     stylingMode="contained"
-                                                    onClick={() => setShowModalFuncionario(false)}
+                                                    onClick={() => {
+                                                        setEditFuncionario(true);
+                                                        setShowModalFuncionario(false);
+                                                    }}
                                                 />
 
                                                 <Button
@@ -278,7 +317,10 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
                                                     className="ml-1"
                                                     icon='fas fa-save'
                                                     stylingMode="contained"
-                                                    onClick={() => salvarValorFuncionario()}
+                                                    onClick={() => {
+                                                        setEditFuncionario(true);
+                                                        salvarValorFuncionario();
+                                                    }}
                                                 />
                                             </div>
 
@@ -321,6 +363,13 @@ export default function Index({ cliente, setCliente, tipoServicos, unidadesMedid
                     <GroupPanel visible={true} />
                     <SearchPanel visible={true} highlightCaseSensitive={true} />
                     <Grouping autoExpandAll={false} />
+
+                    <Column
+                        caption="Funcionário"
+                        dataField="funcionario.pessoa.normalized_name"
+                        dataType="string"
+                        defaultSortOrder="asc"
+                    />
 
                     <Column
                         caption="Tipo de Serviço"

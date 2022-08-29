@@ -4,38 +4,31 @@ import { Navigate, useParams } from 'react-router-dom';
 import { Button } from 'devextreme-react/button';
 import TextBox from 'devextreme-react/text-box';
 import { NotificationManager } from 'react-notifications';
-import TagBox from 'devextreme-react/tag-box';
 import SelectBox from 'devextreme-react/select-box';
 
 import Loading from '../../../../Componentes/Loading';
 import history from '../../../../Componentes/History';
 import Content from '../../../../Componentes/Content';
-import FuncionarioModel from '../../../../Models/Funcionario.ts';
+import ColaboradorModel from '../../../../Models/Colaborador.ts';
 
-export default function FuncionarioCreate() {
+export default function ColaboradorCreate() {
 
-    const { funcionario_id } = useParams();
+    const { colaborador_id } = useParams();
     const [showLoader, setShowLoader] = useState(false);
-    const [tipoServicos, setTipoServicos] = useState([]);
-    const [selectedServicos, setSelectedServicos] = useState([]);    
-    const [funcionario, setFuncionario] = useState(new FuncionarioModel());
+    const [colaborador, setColaborador] = useState(new ColaboradorModel());
     const [redirect, setRedirect] = useState(false);
 
     useEffect(function () {
 
-        getTipoServicos();
-
-        if (funcionario_id != null) {
+        if (colaborador_id != null) {
             setShowLoader(true);
-            axios.get(`api/funcionario/get/${funcionario_id}`)
+            axios.get(`api/colaborador/get/${colaborador_id}`)
                 .then((response) => {
-                    const tpServicos = response.data.tipo_servicos?.map((s) => s.id);
-                    setSelectedServicos(tpServicos || []);
-                    setFuncionario(response.data);
+                    setColaborador(response.data);                         
                     setShowLoader(false);
                 })
                 .catch((error) => {
-                    NotificationManager.error(JSON.stringify(error), 'Funcionário');
+                    NotificationManager.error(JSON.stringify(error), 'Colaborador');
                     setShowLoader(false);
                 });
         }
@@ -47,58 +40,43 @@ export default function FuncionarioCreate() {
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function () {
-                resolve(reader.result);
+              resolve(reader.result);
             };
             reader.onerror = function (error) {
-                reject(error);
+              reject(error);
             };
-
+            
         });
     }
 
     const onFileChange = (e) => {
         getBase64(e.target.files[0])
             .then((result) => {
-                setFuncionario({ ...funcionario, pessoa: { ...funcionario.pessoa, foto: result } });
+                setColaborador({ ...colaborador, pessoa: { ...colaborador.pessoa, foto: result }});
             });
     }
-
-    const getTipoServicos = () => {
-        axios.get(`api/tipo-servicos/list`)
-            .then((response) => {
-                if (response.data.status === false) {
-                    NotificationManager.error(response.data.message, 'Ordem de Serviço');
-                } else {
-                    setTipoServicos(response.data);
-                }
-            })
-            .catch((error) => {
-                NotificationManager.error(JSON.stringify(error), 'Ordem de Serviço');
-            });
-    };
-
+      
     const handleChangeInput = function (e, attr) {
-        funcionario.pessoa[attr] = e.value;
-        setFuncionario({ ...funcionario });
+        colaborador.pessoa[attr] = e.value;
+        setColaborador({ ...colaborador });
     };
 
-    const salvarFuncionario = function (e) {
+    const salvarColaborador = function (e) {
 
         setShowLoader(true);
-        funcionario.tipo_servicos = tipoServicos.filter((s) => selectedServicos.indexOf(s.id) > -1);
 
-        axios.post('api/funcionario/createOrUpdate', funcionario)
+        axios.post('api/colaborador/createOrUpdate', colaborador)
             .then((response) => {
                 setShowLoader(false);
-                if (response.data.status === false) {
-                    NotificationManager.error(response.data.message, 'Funcionário');
+                if(response.data.status === false){
+                    NotificationManager.error(response.data.message, 'Colaborador');
                 } else {
-                    NotificationManager.success('Cadastro realizado com sucesso.', 'Funcionário');
+                    NotificationManager.success('Cadastro realizado com sucesso.', 'Colaborador');
                     setRedirect(true);
                 }
             })
             .catch((error) => {
-                NotificationManager.error(JSON.stringify(error), 'Funcionário');
+                NotificationManager.error(JSON.stringify(error), 'Colaborador');
                 setShowLoader(false);
             });
 
@@ -120,7 +98,7 @@ export default function FuncionarioCreate() {
                                 <label htmlFor="imageUpload"></label>
                             </div>
                             <div className="avatar-preview">
-                                <div id="imagePreview" style={{ backgroundImage: funcionario.pessoa.foto ? `url(${funcionario.pessoa.foto})` : "url('images/contacts/user.jpg')" }}>
+                                <div id="imagePreview" style={{ backgroundImage: colaborador.pessoa.foto ? `url(${colaborador.pessoa.foto})` : "url('images/contacts/user.jpg')" }}>
                                 </div>
                             </div>
                         </div>
@@ -128,9 +106,9 @@ export default function FuncionarioCreate() {
 
                     <div className="row">
                         <div className="form-group mb-3 col-6">
-                            <label className="form-label">Nome do funcionário</label>
+                            <label className="form-label">Nome do Colaborador</label>
                             <TextBox
-                                value={funcionario.pessoa.razao}
+                                value={colaborador.pessoa.razao}
                                 onValueChanged={(e) => handleChangeInput(e, 'razao')}
                             />
                         </div>
@@ -138,7 +116,7 @@ export default function FuncionarioCreate() {
                         <div className="form-group mb-3 col-md-6">
                             <label className="form-label">Contato Imediato</label>
                             <TextBox
-                                value={funcionario.pessoa.contatoImediato}
+                                value={colaborador.pessoa.contatoImediato}
                                 onValueChanged={(e) => handleChangeInput(e, 'contatoImediato')}
                             />
                         </div>
@@ -146,7 +124,7 @@ export default function FuncionarioCreate() {
                         <div className="form-group mb-3 col-md-6">
                             <label className="form-label">Apelido</label>
                             <TextBox
-                                value={funcionario.pessoa.apelido}
+                                value={colaborador.pessoa.apelido}
                                 onValueChanged={(e) => handleChangeInput(e, 'apelido')}
                             />
                         </div>
@@ -154,7 +132,7 @@ export default function FuncionarioCreate() {
                         <div className="form-group mb-3 col-md-6">
                             <label className="form-label">Telefone</label>
                             <TextBox
-                                value={funcionario.pessoa.telefone}
+                                value={colaborador.pessoa.telefone}
                                 onValueChanged={(e) => handleChangeInput(e, 'telefone')}
                             />
                         </div>
@@ -162,26 +140,10 @@ export default function FuncionarioCreate() {
                         <div className="form-group mb-3 col-md-6">
                             <label className="form-label">Email</label>
                             <TextBox
-                                value={funcionario.pessoa.email}
+                                value={colaborador.pessoa.email}
                                 onValueChanged={(e) => handleChangeInput(e, 'email')}
                             />
-                        </div>
-
-                        <div className="form-group col-6">
-                            <label>Serviços</label>
-                            <TagBox
-                                searchEnabled={true}
-                                showClearButton={true}
-                                dataSource={tipoServicos}
-                                displayExpr="descricao"
-                                valueExpr="id"
-                                value={selectedServicos}
-                                selectedItems={selectedServicos}
-                                onValueChanged={(item) => {
-                                    setSelectedServicos(item.value);
-                                }}
-                            />
-                        </div>
+                        </div>  
 
                         <div className="form-group col-6">
                             <label>Sexo</label>
@@ -199,13 +161,24 @@ export default function FuncionarioCreate() {
                                 ]}
                                 displayExpr="descricao"
                                 valueExpr="id"
-                                value={funcionario.sexo}     
+                                value={colaborador.sexo}     
                                 onSelectionChanged={(e) => {
-                                    funcionario.sexo = e.selectedItem.id;
-                                    setFuncionario({ ...funcionario });
+                                    colaborador.sexo = e.selectedItem.id;
+                                    setColaborador({ ...colaborador });
                                 }}
                             />
                         </div>
+
+                        <div className="form-group mb-3 col-6">
+                            <label className="form-label">Senha</label>
+                            <TextBox
+                                value={colaborador.senha}
+                                onValueChanged={(e) => {
+                                    colaborador.senha = e.value;
+                                    setColaborador({ ...colaborador });
+                                }}
+                            />
+                        </div>                                            
 
                     </div>
                     <div className="d-flex justify-end">
@@ -223,7 +196,7 @@ export default function FuncionarioCreate() {
                             type="success"
                             icon='fas fa-check'
                             stylingMode="contained"
-                            onClick={(e) => salvarFuncionario(e)}
+                            onClick={(e) => salvarColaborador(e)}
                         />
                     </div>
                 </form>
@@ -232,12 +205,12 @@ export default function FuncionarioCreate() {
     }
 
     if (redirect) {
-        return <Navigate to="/app/funcionarios" />
+        return <Navigate to="/app/colaboradores" />
     }
 
     return (
         <>
-            <Content titulo="Cadastro de Funcionários">
+            <Content titulo="Cadastro de Colaboradores">
                 {renderPage()}
             </Content>
         </>

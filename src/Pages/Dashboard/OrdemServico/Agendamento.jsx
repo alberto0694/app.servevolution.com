@@ -47,6 +47,7 @@ function Agendamento() {
             axios.post(`/api/ordem-servicos/list${queryParam}`, param || dataFilter)
                 .then((response) => {
 
+                    console.log('response', response);
                     setShowLoader(false);
                     setAgendamentos(response.data);
                     resolve(response);

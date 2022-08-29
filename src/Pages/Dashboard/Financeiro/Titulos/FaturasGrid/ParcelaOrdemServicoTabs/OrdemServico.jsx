@@ -1,22 +1,15 @@
 import React from 'react';
 import {
     DataGrid,
-    Column,
-    Grouping,
-    GroupPanel,
-    Pager,
-    Paging,
-    SearchPanel,
-    Selection,
-    FilterRow
+    Column
 } from 'devextreme-react/data-grid';
 
-export default function OrdemServico({ titulo }) {
+export default function OrdemServico({ ordemServicos }) {
 
     return (
         <>
             <DataGrid
-                dataSource={titulo.ordem_servicos}
+                dataSource={ordemServicos}
                 showBorders={true}
                 columnAutoWidth={true}
             >
